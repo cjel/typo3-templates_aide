@@ -251,14 +251,10 @@ class MailUtility
                                         case 'buttonleft':
                                         case 'buttoncenter':
                                         case 'buttonright':
-                                            return '<a style="display: inline-block;" href="'
-                                                . $matchesInner[1]
-                                                . '">'
-                                                . '<span style="display: inline-block; padding: 10px 15px; border-radius: 3px; background-color: red;">'
-                                                . 'Button!!!! '
-                                                . $matchesInner[2]
-                                                . '</span>'
-                                                . '</a>';
+                                            return json_encode([
+                                                $matchesInner[1],
+                                                $matchesInner[2]
+                                            ]);
                                             break;
                                         default:
                                             return '<a href="'

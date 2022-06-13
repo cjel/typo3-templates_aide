@@ -8,6 +8,16 @@
     <f:variable name="padding" value="20" />
   </f:else>
 </f:if>
+<f:if condition="{buttonColor}">
+  <f:else>
+    <f:variable name="buttonColor" value="#ffffff" />
+  </f:else>
+</f:if>
+<f:if condition="{buttonBackgroundcolor}">
+  <f:else>
+    <f:variable name="buttonBackgroundcolor" value="#8ABF6F" />
+  </f:else>
+</f:if>
 <f:variable name="widthPadded" value="{width - padding - padding}" />
 <f:variable name="widthTableColumn" value="{widthPadded / 2}" />
 
@@ -78,7 +88,12 @@
                                       </f:case>
                                       <f:case value="buttoncenter">
                                         <span style="display: inline-block;" class="buttonwrapper">
-                                          {row.data -> f:format.nl2br() -> f:format.raw()}
+                                          <f:variable name="rowData">{row.data -> v:format.json.decode()}</f:variable>
+                                          <a style="display: inline-block; color: {buttonColor}" href="{rowData.0}">
+                                            <span style="display: inline-block; padding: 10px 15px; border-radius: 3px; background-color: {buttonBackgroundcolor};">
+                                              {rowData.1}
+                                            </span>
+                                          </a>
                                         </span>
                                       </f:case>
                                       <f:case value="buttonright">
