@@ -15,6 +15,7 @@ namespace Cjel\TemplatesAide\ViewHelpers;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class TranslationViewHelper extends AbstractViewHelper
 {
@@ -33,6 +34,20 @@ class TranslationViewHelper extends AbstractViewHelper
            'The translation key to render',
            true
        );
+       $this->registerArgument(
+           'extensionKey',
+           'string',
+           'The extension key to search in',
+           false,
+           'site_templates'
+       );
+       $this->registerArgument(
+           'arguments',
+           'array',
+           'The arguments',
+           false,
+           false
+       );
    }
 
    /**
@@ -48,6 +63,14 @@ class TranslationViewHelper extends AbstractViewHelper
        \Closure $renderChildrenClosure,
        RenderingContextInterface $renderingContext
    ) {
-       return 'this.extension.translation';
+        $translation = LocalizationUtility::translate(
+            $arguments['key'],
+            $arguments['extensionKey'],
+            $arguments['arguments']
+        );
+        if ($translation) {
+            return $translation;
+        }
+       return $arguments['extensionKey'] . ': ' . $arguments['key'];
    }
 }

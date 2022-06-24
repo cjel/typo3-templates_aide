@@ -488,18 +488,8 @@ class ActionController extends BaseController
             if ($error->keyword() == 'additionalProperties') {
                 continue;
             }
-            if ($error->keyword() != 'required') {
-                $errorLabel = $this->getTranslation(
-                    'error.' . $field . '.' . $error->keyword()
-                );
-                if ($errorLabel == null) {
-                    $errorLabel = 'error.'
-                        . $field
-                        . '.'
-                        . $error->keyword();
-                }
-                $this->errorLabels[$field] = $errorLabel;
-            } else {
+            switch ($error->keyword()) {
+            case 'required':
                 $errorLabel = $this->getTranslation(
                     'error.' . $field . '.required'
                 );
@@ -518,6 +508,59 @@ class ActionController extends BaseController
                         . $error->keyword();
                 }
                 $this->errorLabels[$field] = $errorLabel;
+                break;
+            case 'pattern':
+                $errorLabel = $this->getTranslation(
+                    'error.' . $field . '.pattern'
+                );
+                if ($errorLabel == null) {
+                    $fieldLabel = $this->getTranslation(
+                        'field.' . $field
+                    );
+                    $errorLabel = $this->getTranslation(
+                        'error.pattern', [$fieldLabel]
+                    );
+                }
+                if ($errorLabel == null) {
+                    $errorLabel = 'error.'
+                        . $field
+                        . '.'
+                        . $error->keyword();
+                }
+                $this->errorLabels[$field] = $errorLabel;
+                break;
+            case 'format':
+                $errorLabel = $this->getTranslation(
+                    'error.' . $field . '.format'
+                );
+                if ($errorLabel == null) {
+                    $fieldLabel = $this->getTranslation(
+                        'field.' . $field
+                    );
+                    $errorLabel = $this->getTranslation(
+                        'error.format', [$fieldLabel]
+                    );
+                }
+                if ($errorLabel == null) {
+                    $errorLabel = 'error.'
+                        . $field
+                        . '.'
+                        . $error->keyword();
+                }
+                $this->errorLabels[$field] = $errorLabel;
+                break;
+            default:
+                $errorLabel = $this->getTranslation(
+                    'error.' . $field . '.' . $error->keyword()
+                );
+                if ($errorLabel == null) {
+                    $errorLabel = 'error.'
+                        . $field
+                        . '.'
+                        . $error->keyword();
+                }
+                $this->errorLabels[$field] = $errorLabel;
+                break;
             }
         }
     }
