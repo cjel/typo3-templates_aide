@@ -123,6 +123,7 @@ trait ValidationTrait
     {
         $validator = new Validator();
         $input = ArrayUtility::removeEmptyStrings($input);
+        unset($input['eID']);
         //@TODO make optional when usiing rest api
         //array_walk_recursive(
         //    $input,
