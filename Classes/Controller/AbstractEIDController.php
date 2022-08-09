@@ -12,8 +12,8 @@ namespace Cjel\TemplatesAide\Controller;
  *
  ***/
 
-use Cjel\TemplatesAide\Traits\ValidationTrait;
 use Cjel\TemplatesAide\Traits\FormatResultTrait;
+use Cjel\TemplatesAide\Traits\ValidationTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -23,6 +23,8 @@ use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Reflection\ClassSchema;
 use TYPO3\CMS\Extbase\Reflection\ReflectionService;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
@@ -256,6 +258,17 @@ class AbstractEIDController
             return $response->withStatus(404);
         }
     }
+
+    /**
+     *
+     */
+    public function persistAll()
+    {
+        ($this->objectManager->get(
+            PersistenceManager::class
+        ))->persistAll();
+    }
+
 
     /**
      * return function
