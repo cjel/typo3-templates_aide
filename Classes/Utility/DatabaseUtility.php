@@ -54,4 +54,16 @@ class DatabaseUtility
             ->createQueryBuilder();
         return $queryBuilder;
     }
+
+    /**
+     * Gets a connection for a table and returns it
+     *
+     * @param $tablename string table name
+     * @return object connection
+     */
+    public static function getConnectionFromTableName($tableName)
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($tableName);
+    }
 }
