@@ -123,7 +123,9 @@ trait ValidationTrait
     {
         $validator = new Validator();
         $input = ArrayUtility::removeEmptyStrings($input);
-        unset($input['eID']);
+        if (is_array($input) && array_key_exists('eID', $input)) {
+            unset($input['eID']);
+        }
         //@TODO make optional when usiing rest api
         //array_walk_recursive(
         //    $input,
