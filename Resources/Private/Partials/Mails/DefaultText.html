@@ -20,9 +20,9 @@
             ### {row.data -> f:format.nl2br() -> f:format.raw()}
           </f:case>
           <f:defaultCase>
-              <f:spaceless><v:format.wordWrap limit="76" glue="{br}">
+              <f:spaceless><c:format.wordWrap limit="76" glue="{br}">
                 {row.data -> f:format.raw()}
-              </v:format.wordWrap>
+              </c:format.wordWrap>
             </f:spaceless>{br}{br}
           </f:defaultCase>
         </f:switch>
