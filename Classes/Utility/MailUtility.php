@@ -259,7 +259,7 @@ class MailUtility
                                         default:
                                             return '<a href="'
                                                 . $matchesInner[1]
-                                                . '">'
+                                                . '" target="_blank">'
                                                 . $matchesInner[2]
                                                 . '</a>';
                                             break;

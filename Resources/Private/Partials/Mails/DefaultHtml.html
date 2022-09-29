@@ -89,7 +89,7 @@
                                       <f:case value="buttoncenter">
                                         <span style="display: inline-block;" class="buttonwrapper">
                                           <f:variable name="rowData">{row.data -> v:format.json.decode()}</f:variable>
-                                          <a style="display: inline-block; color: {buttonColor}" href="{rowData.0}">
+                                          <a style="display: inline-block; color: {buttonColor}" target="_blank" href="{rowData.0}">
                                             <span style="display: inline-block; padding: 10px 15px; border-radius: 3px; background-color: {buttonBackgroundcolor};">
                                               {rowData.1}
                                             </span>
