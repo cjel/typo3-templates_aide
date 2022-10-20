@@ -66,4 +66,49 @@ class DatabaseUtility
         return GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable($tableName);
     }
+
+    /**
+     * testAndCreateIndex
+     */
+    public static function testAndCreateIndex(
+        $table, $indexName, $indexColumns, $type
+    ) {
+        $connection = GeneralUtility::makeInstance(
+            ConnectionPool::class
+        )->getConnectionForTable($table);
+        $existTestQuery = "
+            SHOW TABLES LIKE '${table}'
+        ";
+        $existTestResult = $connection
+            ->executeQuery($existTestQuery)
+            ->fetchAll();
+        if (!count($existTestResult)) {
+            return;
+        }
+        $indexTestQuery = "
+            SHOW INDEX FROM ${table}
+            WHERE Key_name = '${indexName}'
+        ";
+        $indexTestResult = $connection
+            ->executeQuery($indexTestQuery)
+            ->fetchAll();
+        if (count($indexTestResult)) {
+            return;
+        }
+        switch ($type) {
+        case 'btree':
+            $queryCreate = "
+                CREATE INDEX ${indexName}
+                USING BTREE ON ${table} (${indexColumns})
+            ";
+            break;
+        case 'fulltext':
+            $queryCreate = "
+                CREATE FULLTEXT INDEX ${indexName}
+                ON ${table} (${indexColumns})
+            ";
+            break;
+        }
+        $connection->executeQuery($queryCreate);
+    }
 }
