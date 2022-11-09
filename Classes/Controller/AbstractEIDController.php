@@ -19,6 +19,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DefaultRestrictionContainer;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -87,6 +88,16 @@ class AbstractEIDController
      * logger
      */
     protected $importLogger = null;
+
+    /**
+     * uriMapping
+     */
+    protected $uriMapping = null;
+
+    /**
+     * uriMappingValues
+     */
+    protected $uriMappingValues = [];
 
 
     /*
@@ -189,6 +200,8 @@ class AbstractEIDController
             0,
             true
         );
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
+        $GLOBALS['LANG']->init('default');
         $GLOBALS['TSFE'] = $frontendController;
         $frontendController->connectToDB();
         $frontendController->fe_user = EidUtility::initFeUser();
@@ -219,15 +232,44 @@ class AbstractEIDController
             return $response->withStatus(404);
         }
         $httpMethod = strtolower($request->getMethod());
-        if ($apiObjectId) {
-            $requestMethod = $httpMethod
-                . ucfirst($apiObject)
-                . 'SingleRequest';
-            $request->apiObjectId = $apiObjectId;
+        if ($this->uriMapping) {
+            $uriParts = explode('/', $request->getUri()->getPath());
+            $uriParts = array_slice($uriParts, 3);
+            foreach ($this->uriMapping[$httpMethod] as $mapping => $function) {
+                $mappingParts = explode('/', $mapping);
+                $mappingParts = array_slice($mappingParts, 1);
+                $max = max(count($mappingParts), count($uriParts));
+                $mappingMatching = true;
+                for ($i = 0; $i < $max; $i++) {
+                    if ($uriParts[$i] == $mappingParts[$i]) {
+                        continue;
+                    }
+                    if (
+                        $uriParts[$i]
+                        && substr($mappingParts[$i], 0, 1) == '{'
+                        && substr($mappingParts[$i], -1, 1) == '}'
+                    ) {
+                        $mappingKey = substr($mappingParts[$i], 1, -1);
+                        $this->uriMappingValues[$mappingKey] = $uriParts[$i];
+                        continue;
+                    }
+                    $mappingMatching = false;
+                }
+                if ($mappingMatching == true) {
+                    $requestMethod = $function . 'Request';
+                }
+            }
         } else {
-            $requestMethod = $httpMethod
-                . ucfirst($apiObject)
-                . 'Request';
+            if ($apiObjectId) {
+                $requestMethod = $httpMethod
+                    . ucfirst($apiObject)
+                    . 'SingleRequest';
+                $request->apiObjectId = $apiObjectId;
+            } else {
+                $requestMethod = $httpMethod
+                    . ucfirst($apiObject)
+                    . 'Request';
+            }
         }
         if (method_exists($this, $requestMethod)) {
             $responseData = $this->$requestMethod($request, $response);

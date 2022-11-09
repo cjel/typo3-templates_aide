@@ -119,8 +119,9 @@ trait ValidationTrait
      * @param schema
      * @return void
      */
-    protected function validateAgainstSchema($input, $schema)
-    {
+    protected function validateAgainstSchema(
+        $input, $schema, $translate = false
+    ) {
         $validator = new Validator();
         $input = ArrayUtility::removeEmptyStrings($input);
         if (is_array($input) && array_key_exists('eID', $input)) {
@@ -141,6 +142,7 @@ trait ValidationTrait
             json_encode($schema),
             -1
         );
+
         if (!$validationResult->isValid()) {
             $this->isValid = false;
             $this->responseStatus = [400 => 'validationError'];
@@ -165,6 +167,9 @@ trait ValidationTrait
                         'details' => $error->keywordArgs()
                     ];
                 }
+            }
+            if ($translate) {
+                $this->translateErrorMessages($validationResult);
             }
         }
         return $validationResult;
@@ -213,7 +218,8 @@ trait ValidationTrait
         $translation = LocalizationUtility::translate(
             $key,
             $this->getExtensionKey(),
-            $arguments
+            $arguments,
+            'de'
         );
         if ($translation) {
             return $translation;
@@ -229,5 +235,97 @@ trait ValidationTrait
         return null;
     }
 
+    /**
+     * translate error messages to user readable strings
+     */
+    protected function translateErrorMessages($validationResult)
+    {
+        foreach ($validationResult->getErrors() as $error){
+            $errorLabel = null;
+            $field = implode('.', $error->dataPointer());
+            if ($error->keyword() == 'required') {
+                $tmp = $error->dataPointer();
+                array_push($tmp, $error->keywordArgs()['missing']);
+                $field = implode('.', $tmp);
+            }
+            if ($error->keyword() == 'additionalProperties') {
+                continue;
+            }
+            switch ($error->keyword()) {
+            case 'required':
+                $errorLabel = $this->getTranslation(
+                    'error.' . $field . '.required'
+                );
+                if ($errorLabel == null) {
+                    $fieldLabel = $this->getTranslation(
+                        'field.' . $field
+                    );
+                    $errorLabel = $this->getTranslation(
+                        'error.required', [$fieldLabel]
+                    );
+                }
+                if ($errorLabel == null) {
+                    $errorLabel = 'error.'
+                        . $field
+                        . '.'
+                        . $error->keyword();
+                }
+                $this->errorLabels[$field] = $errorLabel;
+                break;
+            case 'pattern':
+                $errorLabel = $this->getTranslation(
+                    'error.' . $field . '.pattern'
+                );
+                if ($errorLabel == null) {
+                    $fieldLabel = $this->getTranslation(
+                        'field.' . $field
+                    );
+                    $errorLabel = $this->getTranslation(
+                        'error.pattern', [$fieldLabel]
+                    );
+                }
+                if ($errorLabel == null) {
+                    $errorLabel = 'error.'
+                        . $field
+                        . '.'
+                        . $error->keyword();
+                }
+                $this->errorLabels[$field] = $errorLabel;
+                break;
+            case 'format':
+                $errorLabel = $this->getTranslation(
+                    'error.' . $field . '.format'
+                );
+                if ($errorLabel == null) {
+                    $fieldLabel = $this->getTranslation(
+                        'field.' . $field
+                    );
+                    $errorLabel = $this->getTranslation(
+                        'error.format', [$fieldLabel]
+                    );
+                }
+                if ($errorLabel == null) {
+                    $errorLabel = 'error.'
+                        . $field
+                        . '.'
+                        . $error->keyword();
+                }
+                $this->errorLabels[$field] = $errorLabel;
+                break;
+            default:
+                $errorLabel = $this->getTranslation(
+                    'error.' . $field . '.' . $error->keyword()
+                );
+                if ($errorLabel == null) {
+                    $errorLabel = 'error.'
+                        . $field
+                        . '.'
+                        . $error->keyword();
+                }
+                $this->errorLabels[$field] = $errorLabel;
+                break;
+            }
+        }
+    }
 
 }
