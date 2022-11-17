@@ -136,4 +136,31 @@ class ObjectUtility
             }
         }
     }
+
+    /**
+     * Clears all object fields
+     *
+     * @return void
+     */
+    public static function clearData(
+        &$object
+    ) {
+        foreach ($object->_getProperties() as $property => $value) {
+            if ($property == 'uid' || $property == 'pid') {
+                continue;
+            }
+            switch (getType($value)) {
+            case 'string':
+                $object->_setProperty($property, '');
+                break;
+            case 'boolean':
+                $object->_setProperty($property, false);
+                break;
+            case 'integer':
+                $object->_setProperty($property, 0);
+                break;
+            }
+        }
+    }
+
 }
