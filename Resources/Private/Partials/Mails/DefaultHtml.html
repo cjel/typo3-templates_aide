@@ -30,6 +30,7 @@
         || {row.type} == 'buttonleft'
         || {row.type} == 'buttoncenter'
         || {row.type} == 'buttonright'
+        || {row.type} == 'hr'
       ">
         <!--[if mso | IE]>
           <table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:{width}px;" width="{width}" >
@@ -101,6 +102,10 @@
                                           {row.data -> f:format.nl2br() -> f:format.raw()}
                                         </span>
                                       </f:case>
+                                      <f:case value="hr">
+                                        <p style="border-top:solid 1px #bababa;font-size:1px;margin:13px auto;width:100%;">
+                                        </p>
+                                      </f:case>
                                       <f:defaultCase>
                                         <p>{row.data -> f:format.nl2br() -> f:format.raw()}</p>
                                       </f:defaultCase>
@@ -135,6 +140,9 @@
       <f:comment>Data is array, can be table or list</f:comment>
       <f:switch expression="{row.type}">
         <f:case value="table">
+          <f:variable name="type" value="table" />
+        </f:case>
+        <f:case value="tablelr">
           <f:variable name="type" value="table" />
         </f:case>
         <f:case value="tableLayout">
@@ -178,11 +186,19 @@
                       </td>
                       <td class="" style="vertical-align:top;width:{widthTableColumn}px;">
                     <![endif]-->
-                    <div class="mj-column-per-50 outlook-group-fix" style="font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                    <f:switch expression="{row.type}">
+                      <f:case value="tablelr">
+                        <f:variable name="align" value="right" />
+                      </f:case>
+                      <f:defaultCase>
+                        <f:variable name="align" value="left" />
+                      </f:defaultCase>
+                    </f:switch>
+                    <div class="mj-column-per-50 outlook-group-fix" style="font-size:13px;text-align:{align};direction:ltr;display:inline-block;vertical-align:top;width:100%;">
                       <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
                         <tr>
-                          <td align="left" style="font-size:0px;padding:0px 4px;word-break:break-word;">
-                            <div style="font-family:Arial, sans-serif;font-size:16px;line-height:1.4;text-align:left;color:#000000;">
+                          <td align="{align}" style="font-size:0px;padding:0px 4px;word-break:break-word;">
+                            <div style="font-family:Arial, sans-serif;font-size:16px;line-height:1.4;text-align:{align};color:#000000;">
                               <div>{row.data.1 -> f:format.nl2br() -> f:format.raw()}</div>
                             </div>
                           </td>
