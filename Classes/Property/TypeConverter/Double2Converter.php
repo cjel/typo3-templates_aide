@@ -75,14 +75,6 @@ class Double2Converter extends AbstractTypeConverter
             $value *= -1;
         }
         $value = number_format($value, 2, '.', '');
-        //\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
-        //    $source, null, 3
-        //);
-        //if (is_string($source)) {
-        //    if ($source === '') {
-        //        $source = [];
-        //    }
-        //}
         return $value;
     }
 }

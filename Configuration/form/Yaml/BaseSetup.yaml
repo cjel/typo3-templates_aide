@@ -256,7 +256,7 @@ TYPO3:
               __inheritances:
                 10: 'TYPO3.CMS.Form.mixins.finishersEmailMixin'
 
-            EmailToReceiver:
+            EmailsToReceiver:
               __inheritances:
                 10: 'TYPO3.CMS.Form.mixins.finishersEmailMixin'
 

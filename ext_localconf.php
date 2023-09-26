@@ -1,19 +1,19 @@
 <?php
-defined('TYPO3_MODE') || die('Access denied.');
-
+defined('TYPO3') or die();
+use Cjel\TemplatesAide\Controller\DummyController;
 call_user_func(
     function()
     {
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'Cjel.TemplatesAide',
+            'TemplatesAide',
             'Dummy',
             [
-                'Dummy' => 'list'
+              DummyController::class => 'list'
             ],
             // non-cacheable actions
             [
-                'Dummy' => ''
+              DummyController::class => ''
             ]
         );
 
@@ -83,10 +83,5 @@ call_user_func(
         $_GET['eID'] = 'script_disabled';
       }
     }
-    //$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['script_enable'] =
-    //    \Cjel\TemplatesAide\Controller\EIDController::class
-    //        . '::scriptEnable';
-
-
   }
 );

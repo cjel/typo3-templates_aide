@@ -60,10 +60,6 @@ class WordWrapViewHelper extends AbstractViewHelper
                 continue;
             }
             $temp = '';
-            //while (mb_strlen($line) > $limit) {
-            //    $temp .= mb_substr($line, 0, $limit - 1);
-            //    $line = mb_substr($line, $limit - 1);
-            //}
             if (false === empty($temp)) {
                 $output .= $temp . $glue . $line . $glue;
             } else {

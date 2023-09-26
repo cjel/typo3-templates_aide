@@ -80,10 +80,10 @@ trait DependencyInjectionTrait
         $this->objectManager = GeneralUtility::makeInstance(
             ObjectManager::class
         );
-        $this->configurationManager = $this->objectManager->get(
+        $this->configurationManager = GeneralUtility::makeInstance(
             ConfigurationManagerInterface::class
         );
-        $this->apiUtility = $this->objectManager->get(
+        $this->apiUtility = GeneralUtility::makeInstance(
             ApiUtility::class
         );
         $frameworkConfiguration = $this->configurationManager->getConfiguration(
@@ -102,11 +102,7 @@ trait DependencyInjectionTrait
                 $frameworkConfiguration['persistence']['storagePid']
             )
         );
-        $this->reflectionService = GeneralUtility::makeInstance(
-            ReflectionService::class, GeneralUtility::makeInstance(
-                CacheManager::class
-            )
-        );
+        $this->reflectionService = GeneralUtility::makeInstance(ReflectionService::class);
         $classInfo = $this->reflectionService->getClassSchema(
             get_class($this)
         );

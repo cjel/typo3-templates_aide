@@ -127,22 +127,12 @@ trait ValidationTrait
         if (is_array($input) && array_key_exists('eID', $input)) {
             unset($input['eID']);
         }
-        //@TODO make optional when usiing rest api
-        //array_walk_recursive(
-        //    $input,
-        //    function (&$value) {
-        //        if (filter_var($value, FILTER_VALIDATE_INT)) {
-        //            $value = (int)$value;
-        //        }
-        //    }
-        //);
         $input = ArrayUtility::toObject($input);
         $validationResult = $validator->dataValidation(
             $input,
             json_encode($schema),
             -1
         );
-
         if (!$validationResult->isValid()) {
             $this->isValid = false;
             $this->responseStatus = [400 => 'validationError'];

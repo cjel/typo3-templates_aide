@@ -20,6 +20,7 @@ use TYPO3\CMS\Extbase\Service\ImageService;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Fluid\View\TemplatePaths;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use Symfony\Component\Mime\Address;
 
 /**
  *
@@ -176,7 +177,7 @@ class MailUtility
             $templateNameText = 'Mails/DefaultText';
         }
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationManager = $objectManager->get(
+        $configurationManager = GeneralUtility::makeInstance(
             ConfigurationManagerInterface::class
         );
         $typoScript = $configurationManager->getConfiguration(
@@ -185,9 +186,9 @@ class MailUtility
         $settings =
             (array)$typoScript['module.']['tx_templatesaide.']['settings.'];
         $settings = GeneralUtility::removeDotsFromTS($settings);
-        $htmlView = $objectManager->get(StandaloneView::class);
+        $htmlView = GeneralUtility::makeInstance(StandaloneView::class);
         $htmlView->setTemplate($templateNameHtml);
-        $textView = $objectManager->get(StandaloneView::class);
+        $textView = GeneralUtility::makeInstance(StandaloneView::class);
         if ($templatePaths) {
             $partialRootPaths = $htmlView->getPartialRootPaths();
             $partialRootPaths[] = GeneralUtility::getFileAbsFileName(
@@ -215,8 +216,14 @@ class MailUtility
         }
         $textView->setTemplate($templateNameText);
         $mail = GeneralUtility::makeInstance(MailMessage::class);
-        $mail->setFrom($sender);
-        $mail->setSubject($subject);
+        if (version_compare(TYPO3_branch, '10.0', '>=')) {
+            $mail->subject($subject);
+            $mail->from($sender);
+        }else {
+            $mail->setSubject($subject);
+            $mail->setFrom($sender);
+        }
+        
         $bodydataText = [];
         $bodydataHtml = [];
         foreach ($data as $row) {
@@ -308,83 +315,20 @@ class MailUtility
                     $bodydataText[] = $textRow;
                     $bodydataHtml[] = $htmlRow;
                     break;
-                //case 'button':
-                //    $row['data'] = str_replace(
-                //        "\\\n",
-                //        '',
-                //        $row['data']
-                //    );
-                //    $htmlRow = $row;
-                //    $htmlRow['data'] = preg_replace_callback(
-                //        '/\[.*\]/mU',
-                //        function($matches) {
-                //            foreach ($matches as $match) {
-                //                $test = preg_replace_callback(
-                //                    '/\[(\S*)\s(.*)\]/mU',
-                //                    function($matchesInner) {
-                //
-                //                        return '<a href="'
-                //                            . $matchesInner[1]
-                //                            . '">'
-                //                            . $matchesInner[2]
-                //                            . '</a>';
-                //                    },
-                //                    $match
-                //                );
-                //                \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
-                //                    $test, null, 3, true, false
-                //                );
-                //                return $test;
-                //            }
-                //        },
-                //        $htmlRow['data']
-                //    );
-                //    \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
-                //        $htmlRow['data'], null, 3, true, false
-                //    );
-                //    $htmlRow['data'] = preg_replace_callback(
-                //        '/\*.*\*/mU',
-                //        function($matches) {
-                //            foreach ($matches as $match) {
-                //                return '<b>'
-                //                    . substr($match, 1, -1)
-                //                    . '</b>';
-                //            }
-                //        },
-                //        $htmlRow['data']
-                //    );
-                //    $textRow = $row;
-                //    $textRow['data'] = preg_replace_callback(
-                //        '/\[.*\]/mU',
-                //        function($matches) {
-                //            foreach ($matches as $match) {
-                //                return preg_replace_callback(
-                //                    '/\[(\S*)\s(.*)\]/mU',
-                //                    function($matchesInner) {
-                //                        if (
-                //                            $matchesInner[2] == $matchesInner[1]
-                //                        ) {
-                //                            return $matchesInner[1];
-                //                        }
-                //                        return $matchesInner[2]
-                //                            . ': '
-                //                            . $matchesInner[1];
-                //                    },
-                //                    $match
-                //                );
-                //            }
-                //        },
-                //        $textRow['data']
-                //    );
-                //    $bodydataText[] = $textRow;
-                //    $bodydataHtml[] = $htmlRow;
-                //    break;
                 case 'attachment':
-                    $mail->attach(new \Swift_Attachment(
-                        $row['data'][0],
-                        $row['data'][1],
-                        $row['data'][2]
-                    ));
+                    if (version_compare(TYPO3_branch, '10.0', '>=')) {
+                      $mail->attach(
+                          $row['data'][0],
+                          $row['data'][1],
+                          $row['data'][2]
+                      );
+                    }else {
+                        $mail->attach(new \Swift_Attachment(
+                            $row['data'][0],
+                            $row['data'][1],
+                            $row['data'][2]
+                        ));  
+                    }
                     break;
                 case 'attachmentBase64':
                     $attachmentdata = explode(',', $row['data']);
@@ -392,19 +336,24 @@ class MailUtility
                     $mimetype = $matches[1];
                     preg_match('/\w*\/(.*);\w*/', $attachmentdata[0], $matches);
                     $fileextension = $matches[1];
-                    $mail->attach(new \Swift_Attachment(
-                        base64_decode($attachmentdata[1]),
-                        'attachment.' . $fileextension,
-                        $mimetype
-                    ));
+                    if (version_compare(TYPO3_branch, '10.0', '>=')) {
+                        $mail->attach(
+                            base64_decode($attachmentdata[1]),
+                            'attachment.' . $fileextension,
+                            $mimetype
+                        );
+                    }else {
+                        $mail->attach(new \Swift_Attachment(
+                            base64_decode($attachmentdata[1]),
+                            'attachment.' . $fileextension,
+                            $mimetype
+                        )); 
+                    }
                     break;
             }
         }
         $textView->assign('content', $bodydataText);
         $htmlView->assign('content', $bodydataHtml);
-        //\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
-        //    $bodydataHtml, null, 8, true, false
-        //);
         $domain = $settings['mailDomain'];
         if ($assetDomain) {
             $domain = $assetDomain;
@@ -443,16 +392,30 @@ class MailUtility
             );
             foreach ($recipientsIntercecpted as $recipientIntercepted) {
                 foreach ($recipients as $recipient) {
-                    $mail->setSubject(
-                        $subjectOrig . ' [ORIG-TO: ' . trim($recipient) . ']'
-                    );
-                    $mail->setTo(trim($recipientIntercepted));
+                   
+                    if (version_compare(TYPO3_branch, '10.0', '>=')) {
+                        $mail->subject(
+                            $subjectOrig . ' [ORIG-TO: ' . trim($recipient) . ']'
+                        );
+                        $mail->to(new Address(trim($recipientIntercepted)));
+                    }else {
+                        $mail->setSubject(
+                            $subjectOrig . ' [ORIG-TO: ' . trim($recipient) . ']'
+                        );
+                        $mail->setTo(trim($recipientIntercepted));
+                    }
+                    
                     $mail->send();
                 }
             }
         } else {
             foreach ($recipients as $recipient) {
-                $mail->setTo(trim($recipient));
+                if (version_compare(TYPO3_branch, '10.0', '>=')) {
+                    $mail->to(new Address(trim($recipient)));
+                }else {
+                    $mail->setTo(trim($recipient));
+                }
+                
                 $mail->send();
             }
         }

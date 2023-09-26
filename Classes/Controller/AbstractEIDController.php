@@ -31,6 +31,13 @@ use TYPO3\CMS\Extbase\Reflection\ReflectionService;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
 
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Http\ResponseFactory;
+use TYPO3\CMS\Core\Routing\PageArguments;
+use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+
 /**
  * AbstractEIDController
  */
@@ -120,10 +127,10 @@ class AbstractEIDController
             ObjectManager::class
         );
         $this->initFrontendController();
-        $this->configurationManager = $this->objectManager->get(
+        $this->configurationManager = GeneralUtility::makeInstance(
             ConfigurationManagerInterface::class
         );
-        $this->apiUtility = $this->objectManager->get(
+        $this->apiUtility = GeneralUtility::makeInstance(
             \Cjel\TemplatesAide\Utility\ApiUtility::class
         );
         $frameworkConfiguration = $this->configurationManager->getConfiguration(
@@ -142,22 +149,25 @@ class AbstractEIDController
                 $frameworkConfiguration['persistence']['storagePid']
             )
         );
-        $this->logManager = $this->objectManager->get(
+        $this->logManager = GeneralUtility::makeInstance(
             LogManager::Class
         );
         $this->importLogger = $this->logManager->getLogger(
             'importLogger'
         );
         $this->reflectionService = GeneralUtility::makeInstance(
-            ReflectionService::class, GeneralUtility::makeInstance(
-                CacheManager::class
-            )
+            ReflectionService::class
         );
         $classInfo = $this->reflectionService->getClassSchema(
             get_class($this)
         );
         foreach ($classInfo->getInjectMethods() as $method => $className) {
-            $class = $this->objectManager->get(
+            if (version_compare(TYPO3_branch, '10.0', '>=')) {
+                $className = $className
+                    ->getFirstParameter()
+                    ->getDependency();
+            }
+            $class = GeneralUtility::makeInstance(
                 $className
             );
             $this->{$method}($class);
@@ -193,23 +203,53 @@ class AbstractEIDController
         //if (count($result) < 1) {
         //    throw new \Exception('Domain not configured');
         //}
-        $frontendController = GeneralUtility::makeInstance(
-            \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
-            $GLOBALS['TYPO3_CONF_VARS'],
-            null,
-            0,
-            true
+
+
+        $context = GeneralUtility::makeInstance(Context::class);
+
+
+
+
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        $site = $siteFinder->getSiteByPageId(1049);
+
+        $siteLanguage = reset($site->getLanguages());
+
+        $pageArguments = GeneralUtility::makeInstance(
+            PageArguments::class,
+            1049,
+            '0',
+            []
         );
+
+        $frontendUser = GeneralUtility::makeInstance(
+            FrontendUserAuthentication::class
+        );
+
+
+
+
+        $frontendController = GeneralUtility::makeInstance(
+            TypoScriptFrontendController::class,
+            $context,
+            $site,
+            $siteLanguage,
+            $pageArguments,
+            $frontendUser
+
+        );
+
+        //die;
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
         $GLOBALS['LANG']->init('default');
         $GLOBALS['TSFE'] = $frontendController;
-        $frontendController->connectToDB();
-        $frontendController->fe_user = EidUtility::initFeUser();
-        $frontendController->id = $result[0]['pid'];
+        //$frontendController->connectToDB();
+        //$frontendController->fe_user = EidUtility::initFeUser();
+        //$frontendController->id = 1049;
         $frontendController->determineId();
-        $frontendController->initTemplate();
+        //$frontendController->initTemplate();
         $frontendController->getConfigArray();
-        EidUtility::initTCA();
+        //EidUtility::initTCA();
     }
 
     /**
@@ -226,6 +266,12 @@ class AbstractEIDController
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
+        if (!$response) {
+            $responseFactory = GeneralUtility::makeInstance(
+                ResponseFactory::class
+            );
+            $response = $responseFactory->createResponse();
+        }
         $apiObject = explode('/', $request->getUri()->getPath())[3];
         $apiObjectId = explode('/', $request->getUri()->getPath())[4];
         if (!$apiObject) {
@@ -306,7 +352,7 @@ class AbstractEIDController
      */
     public function persistAll()
     {
-        ($this->objectManager->get(
+        (GeneralUtility::makeInstance(
             PersistenceManager::class
         ))->persistAll();
     }

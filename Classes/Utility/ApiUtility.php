@@ -47,7 +47,7 @@ class ApiUtility
         $this->objectManager = GeneralUtility::makeInstance(
             ObjectManager::class
         );
-        $this->imageService = $this->objectManager->get(
+        $this->imageService = GeneralUtility::makeInstance(
             imageService::class
         );
         if (1 == 0) {
@@ -220,7 +220,7 @@ class ApiUtility
         $this->objectManager = GeneralUtility::makeInstance(
             ObjectManager::class
         );
-        $this->imageService = $this->objectManager->get(
+        $this->imageService = GeneralUtility::makeInstance(
             imageService::class
         );
         $httpHost = GeneralUtility::getIndpEnv('HTTP_HOST');
@@ -235,13 +235,8 @@ class ApiUtility
             0
         );
         $processingInstructionsPreview = array(
-            //'width'     => '1024c',
-            //'height'    => '768c',
-            //'minWidth'  => $minWidth,
-            //'minHeight' => $minHeight,
             'maxWidth'  => '1024',
             'maxHeight' => '768',
-            //'crop'      => $crop,
         );
         $processedImagePreview = $this->imageService
            ->applyProcessingInstructions(

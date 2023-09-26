@@ -27,7 +27,8 @@ use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationBuilder;
 use TYPO3\CMS\Extbase\Service\EnvironmentService;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Http\RequestFactory;
 class ActionController extends BaseController
 {
 
@@ -121,10 +122,7 @@ class ActionController extends BaseController
      */
     protected $ajaxEnv = [];
 
-    /**
-     * @var \TYPO3\CMS\Extbase\Service\ExtensionService
-     */
-    protected $extensionService;
+    
 
     /**
      * uribuilder
@@ -137,12 +135,14 @@ class ActionController extends BaseController
     protected $config = [];
 
     /**
-     * propertyMappginConfigrtationBuolder
+     * ExtensionService
+     * 
+     * @var ExtensionService
      */
-    protected $propertyMapperConfigurationBuilder;
+    protected $extensionService;
 
     /**
-     * @param \TYPO3\CMS\Extbase\Service\ExtensionService $extensionService
+     * @param
      */
     public function injectExtensionService(ExtensionService $extensionService)
     {
@@ -165,21 +165,22 @@ class ActionController extends BaseController
         $this->environmentService = $environmentService;
     }
 
-    /**
-     * propertyMapper
-     *
-     * @var PropertyMapper
-     */
-    protected $propertyMapper;
+    // /**
+    //  * propertyMapper
+    //  *
+    //  * @var PropertyMapper
+    //  */
+    // protected $propertyMapper;
 
-    /**
-     * @param
-     */
-    public function injectPropertyMapper(
-        PropertyMapper $propertyMapper
-    ) {
-        $this->propertyMapper = $propertyMapper;
-    }
+    // /**
+    //  * @param
+    //  */
+    // public function injectPropertyMapper(
+    //     PropertyMapper $propertyMapper
+    // ):void {
+    //     // \TYPO3\CMS\Core\Utility\DebugUtility::debug($propertyMapper);die;
+    //     $this->propertyMapper = $propertyMapper;
+    // }
 
     /**
      * propertyMappingConfigurationBuilder
@@ -221,6 +222,7 @@ class ActionController extends BaseController
      */
     public function initializeAction()
     {
+        
         if ($GLOBALS['TSFE']->config['config']) {
             $this->config = GeneralUtility::removeDotsFromTS(
                 $GLOBALS['TSFE']->config['config']
@@ -237,13 +239,13 @@ class ActionController extends BaseController
         }
         $this->contentObjectUid =
             $this->configurationManager->getContentObject()->data['uid'];
-        $this->cacheManager = $this->objectManager->get(
+        $this->cacheManager = GeneralUtility::makeInstance(
             CacheManager::class
         );
         //$this->cache = $this->cacheManager->getCache(
         //    'tobereplaced' //TODO: Replaceme
         //);
-        $this->logManager = $this->objectManager->get(
+        $this->logManager = GeneralUtility::makeInstance(
             LogManager::Class
         );
         $this->importLogger = $this->logManager->getLogger(
@@ -252,7 +254,7 @@ class ActionController extends BaseController
         $this->generalLogger = $this->logManager->getLogger(
             __CLASS__
         );
-        $this->dataMapper = $this->objectManager->get(
+        $this->dataMapper = GeneralUtility::makeInstance(
             DataMapper::Class
         );
         $this->arguments->addNewArgument('step', 'string', false, false);
@@ -264,7 +266,7 @@ class ActionController extends BaseController
      */
     public function getUriBuilder()
     {
-        return $this->objectManager->get(
+        return GeneralUtility::makeInstance(
             UriBuilder::class
         );
     }
@@ -274,7 +276,7 @@ class ActionController extends BaseController
      */
     public function persistAll()
     {
-        ($this->objectManager->get(
+        (GeneralUtility::makeInstance(
             PersistenceManager::class
         ))->persistAll();
     }
@@ -450,21 +452,7 @@ class ActionController extends BaseController
             $schema
         );
         if (!$validationResult->isValid()) {
-            //foreach ($validationResult->getErrors() as $error){
-            //    $field = implode('.', $error->dataPointer());
-            //    if ($error->keyword() == 'required') {
-            //        $tmp = $error->dataPointer();
-            //        array_push($tmp, $error->keywordArgs()['missing']);
-            //        $field = implode('.', $tmp);
-            //    }
-            //    if ($error->keyword() == 'additionalProperties') {
-            //        continue;
-            //    }
-            //    $this->errors[$field] = [
-            //        'keyword' => $error->keyword(),
-            //        'details' => $error->keywordArgs()
-            //    ];
-            //}
+            
             if ($translate) {
                 $this->translateErrorMessages($validationResult);
             }
@@ -665,6 +653,7 @@ class ActionController extends BaseController
      */
     public function initializePropertyMappingConfigurationFromRequest(\TYPO3\CMS\Extbase\Mvc\Request $request, $propertyMappingConfiguration, $propertyNameTest)
     {
+        
         $trustedPropertiesToken = $request->getInternalArgument('__trustedProperties');
         if (!is_string($trustedPropertiesToken)) {
             return;
@@ -677,14 +666,10 @@ class ActionController extends BaseController
         }
         $trustedProperties = unserialize($serializedTrustedProperties, ['allowed_classes' => false]);
         foreach ($trustedProperties as $propertyName => $propertyConfiguration) {
-
-            //if (!$controllerArguments->hasArgument($propertyName)) {
-            //    continue;
-            //}
             if ($propertyName != $propertyNameTest) {
                 continue;
             }
-            //$propertyMappingConfiguration = $controllerArguments->getArgument($propertyName)->getPropertyMappingConfiguration();
+            
             $this->modifyPropertyMappingConfiguration($propertyConfiguration, $propertyMappingConfiguration);
         }
     }
@@ -731,6 +716,7 @@ class ActionController extends BaseController
         $errorStatus = null,
         $object      = 'data'
     ) {
+        
         $this->setAjaxEnv($object);
         if ($result == null) {
             $result = [];
@@ -740,6 +726,7 @@ class ActionController extends BaseController
                 $result,
                 ['errors' => $this->errors]
             );
+            
         }
         if (!empty($this->errorLabels)) {
             $result = array_merge(
@@ -754,13 +741,23 @@ class ActionController extends BaseController
             );
         }
         if ($this->pageType) {
-            if (is_array($this->responseStatus)) {
-                $this->response->setStatus(
-                    array_key_first($this->responseStatus)
-                );
-            } else {
-                $this->response->setStatus($this->responseStatus);
-            }
+            $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+             if (is_array($this->responseStatus)) {
+                //  $this->response->setStatus(
+                //      array_key_first($this->responseStatus)
+                //  );
+                $response =  $this->responseFactory
+                ->createResponse()
+                ->withHeader('Content-Type', 'application/json; charset=utf-8')
+                ->withStatus(array_key_first($this->responseStatus), '');
+             } else {
+                 //$this->response->setStatus($this->responseStatus);
+                 $response =  $this->responseFactory
+                 ->createResponse()
+                 ->withHeader('Content-Type', 'application/json; charset=utf-8')
+                 ->withStatus($this->responseStatus, '');
+             }
+            
             if ($this->pageType == $this->ajaxPageType) {
                 if ($this->environmentService->isEnvironmentInBackendMode()) {
                     header('Content-Type: application/json');
@@ -775,8 +772,14 @@ class ActionController extends BaseController
             if ($this->reload) {
                 $result['reload'] = true;
             }
-            return json_encode($result);
-        }
+
+            //\TYPO3\CMS\Core\Utility\DebugUtility::debug($result);die;
+            //return json_encode($result);
+            
+            
+            $response->getBody()->write(json_encode($result));
+             return $response;
+            }
         $result = array_merge(
             $result,
             ['cid'           => $this->contentObjectUid],
@@ -789,6 +792,13 @@ class ActionController extends BaseController
                 ['ajaxEnv' => $this->ajaxEnv]
             );
         }
+        
+        
         $this->view->assignMultiple($result);
+        return $this->responseFactory
+        ->createResponse()
+        ->withHeader('Content-Type', 'text/html; charset=utf-8')
+        ->withStatus(200, 'Super ok!')
+        ->withBody($this->streamFactory->createStream($this->view->render()));
     }
 }

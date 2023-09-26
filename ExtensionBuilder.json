@@ -46,13 +46,13 @@
         "emConf": {
             "category": "plugin",
             "custom_category": "",
-            "dependsOn": "typo3 => 8.7.0-9.5.99\n",
+            "dependsOn": "typo3 => 8.7.0-11.5.99\n",
             "disableLocalization": false,
             "disableVersioning": false,
             "skipGenerateDocumentationTemplate": false,
             "sourceLanguage": "en",
             "state": "alpha",
-            "targetVersion": "9.5.0-9.5.99",
+            "targetVersion": "9.5.0-11.5.99",
             "version": "0.0.1"
         },
         "extensionKey": "templates_aide",

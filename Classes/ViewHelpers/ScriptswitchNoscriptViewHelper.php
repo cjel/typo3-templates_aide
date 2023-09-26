@@ -4,7 +4,8 @@ namespace Cjel\TemplatesAide\ViewHelpers;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 class ScriptswitchNoscriptViewHelper extends AbstractViewHelper {
 
@@ -20,10 +21,6 @@ class ScriptswitchNoscriptViewHelper extends AbstractViewHelper {
      */
     public function render()
     {
-
-        //\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
-        //    $GLOBALS['TSFE']->fe_user->getKey('ses', 'scriptstate')
-        //);
 
         $scriptstate = $GLOBALS['TSFE']->fe_user->getKey('ses', 'scriptstate');
 

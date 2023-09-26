@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "typo3/cms-core": "8.7.0 - 10.99.99",
+        "typo3/cms-core": "8.7.0 - 11.5.99",
         "sarhan/php-flatten": "^4.0"
     },
     "autoload": {
@@ -23,7 +23,11 @@
         }
     },
     "replace": {
-        "templates_aide": "self.version",
         "typo3-ter/templates-aide": "self.version"
-    }
+    },
+    "extra": {
+          "typo3/cms": {
+             "extension-key": "templates_aide"
+         }
+      }
 }

@@ -29,6 +29,7 @@ class TcaUtility
     public static function configureSelect(
         &$tca, $column, $element, $options, $extensionKey = null
     ) {
+       
         foreach ($options as &$option) {
             $translationKey = "option.$element.$column.$option[0]";
             $translation = self::getTranslation(

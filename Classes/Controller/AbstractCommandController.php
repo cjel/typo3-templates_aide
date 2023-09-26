@@ -95,10 +95,10 @@ class AbstractCommandController extends Commands
             ObjectManager::class
         );
         $this->initFrontendController();
-        $this->configurationManager = $this->objectManager->get(
+        $this->configurationManager = GeneralUtility::makeInstance(
             ConfigurationManagerInterface::class
         );
-        $this->apiUtility = $this->objectManager->get(
+        $this->apiUtility = GeneralUtility::makeInstance(
             \Cjel\TemplatesAide\Utility\ApiUtility::class
         );
         $this->configurationManager->setConfiguration(array());
@@ -115,7 +115,7 @@ class AbstractCommandController extends Commands
                 $frameworkConfiguration['persistence']['storagePid']
             )
         );
-        $this->logManager = $this->objectManager->get(
+        $this->logManager = GeneralUtility::makeInstance(
             LogManager::Class
         );
         $this->importLogger = $this->logManager->getLogger(
@@ -130,7 +130,7 @@ class AbstractCommandController extends Commands
             get_class($this)
         );
         foreach ($classInfo->getInjectMethods() as $method => $className) {
-            $class = $this->objectManager->get(
+            $class = GeneralUtility::makeInstance(
                 $className
             );
             $this->{$method}($class);

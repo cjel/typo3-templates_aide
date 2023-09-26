@@ -45,9 +45,6 @@ class EIDController extends AbstractEIDController
         ResponseInterface $response = null
     ) {
         $GLOBALS['TSFE']->fe_user->setKey('ses', 'scriptstate', 0);
-        //\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
-        //    $GLOBALS['TSFE']->fe_user->getKey('ses', 'scriptstate')
-        //);
         $GLOBALS["TSFE"]->storeSessionData();
         $response->getBody()->write(\json_encode([]));
         return $response;

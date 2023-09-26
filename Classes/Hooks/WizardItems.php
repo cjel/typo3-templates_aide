@@ -11,17 +11,7 @@ namespace Cjel\TemplatesAide\Hooks;
  *  (c) 2018 Philipp Dieter <philippdieter@attic-media.net>
  *
  ***/
-
-//use GridElementsTeam\Gridelements\Backend\LayoutSetup;
-//use TYPO3\CMS\Backend\Controller\ContentElement\NewContentElementController;
-//use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Wizard\NewContentElementWizardHookInterface;
-//use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
-//use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
-//use TYPO3\CMS\Core\Imaging\IconRegistry;
-//use TYPO3\CMS\Core\Utility\GeneralUtility;
-//use TYPO3\CMS\Core\Utility\StringUtility;
-//use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * Class/Function which manipulates the rendering of items within the new content element wizard

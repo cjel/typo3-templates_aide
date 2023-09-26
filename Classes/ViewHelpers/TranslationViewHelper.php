@@ -46,7 +46,7 @@ class TranslationViewHelper extends AbstractViewHelper
            'array',
            'The arguments',
            false,
-           false
+           []
        );
    }
 
@@ -63,6 +63,8 @@ class TranslationViewHelper extends AbstractViewHelper
        \Closure $renderChildrenClosure,
        RenderingContextInterface $renderingContext
    ) {
+
+   
         $translation = LocalizationUtility::translate(
             $arguments['key'],
             $arguments['extensionKey'],

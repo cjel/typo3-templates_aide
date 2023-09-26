@@ -1,7 +1,8 @@
 <?php
 namespace Cjel\TemplatesAide\ViewHelpers;
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class HeaderDataViewHelper extends AbstractViewHelper
@@ -25,12 +26,7 @@ class HeaderDataViewHelper extends AbstractViewHelper
         }
         switch ($type){
             case 'tracking':
-                //if(GeneralUtility::getApplicationContext()->isProduction()){
                     $GLOBALS['TSFE']->additionalHeaderData[] = $data;
-                //} else {
-                //    $GLOBALS['TSFE']->additionalHeaderData[]
-                //        = '<meta name="placeholder" content="tracking" />';
-                //}
                 break;
             case 'title':
                 $GLOBALS['TSFE']->additionalHeaderData[]

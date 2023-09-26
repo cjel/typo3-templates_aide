@@ -60,14 +60,10 @@ class ImageAppendViewHelper extends AbstractTagBasedViewHelper
     {
         foreach ($this->arguments['images'] as $image) {
             $imagePath = $image->getForLocalProcessing(false);
-            //$image = $this->imageService->getImage('', $imageArgument, true);
-            //$image = $this->imageService->getImageUri($image);
-
             $imageMagickFile = ImageMagickFile::fromFilePath($imagePath, 0);
-
-            \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
-                $imageMagickFile, null, 3
-            );
+            // \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
+            //     $imageMagickFile, null, 3
+            // );
 
 
 
