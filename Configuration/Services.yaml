@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+  Cjel\TemplatesAide\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Standalone/*'
+  Cjel\TemplatesAide\Utility\ApiUtility:
+    public: true
