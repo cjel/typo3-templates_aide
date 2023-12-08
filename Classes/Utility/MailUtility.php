@@ -227,6 +227,7 @@ class MailUtility
             switch($row['type']) {
                 case 'text':
                 case 'table':
+                case 'tablelr':
                 case 'tableLayout':
                 case 'list':
                 case 'textbold':
@@ -238,6 +239,7 @@ class MailUtility
                 case 'buttoncenter':
                 case 'buttonright':
                 case 'divider':
+                case 'hr':
                     $row['data'] = str_replace(
                         "\\\n",
                         '',
@@ -392,4 +394,23 @@ class MailUtility
             }
         }
     }
+
+    /**
+     * Debug print
+     */
+    public static function printMaildata($maildata)
+    {
+        foreach ($maildata as $row) {
+            if (!is_array($row['data'])) {
+                print($row['data']);
+            } else {
+                print($row['data'][0]);
+                print(PHP_EOL);
+                print($row['data'][1]);
+            }
+            print(PHP_EOL);
+        }
+        print(PHP_EOL);
+    }
+
 }
