@@ -79,6 +79,10 @@ class MailUtility
                 $type = 'tableLayout';
                 $textPart = substr($textPart, 3);
             }
+            if (substr($textPart, 0, 3) === '---') {
+                $type = 'divider';
+                $textPart = substr($textPart, 3);
+            }
             if (substr($textPart, 0, 9) === '%subject ') {
                 $type = 'subject';
                 $textPart = substr($textPart, 9);
@@ -233,6 +237,7 @@ class MailUtility
                 case 'buttonleft':
                 case 'buttoncenter':
                 case 'buttonright':
+                case 'divider':
                     $row['data'] = str_replace(
                         "\\\n",
                         '',
@@ -308,77 +313,10 @@ class MailUtility
                     $bodydataText[] = $textRow;
                     $bodydataHtml[] = $htmlRow;
                     break;
-                //case 'button':
-                //    $row['data'] = str_replace(
-                //        "\\\n",
-                //        '',
-                //        $row['data']
-                //    );
-                //    $htmlRow = $row;
-                //    $htmlRow['data'] = preg_replace_callback(
-                //        '/\[.*\]/mU',
-                //        function($matches) {
-                //            foreach ($matches as $match) {
-                //                $test = preg_replace_callback(
-                //                    '/\[(\S*)\s(.*)\]/mU',
-                //                    function($matchesInner) {
-                //
-                //                        return '<a href="'
-                //                            . $matchesInner[1]
-                //                            . '">'
-                //                            . $matchesInner[2]
-                //                            . '</a>';
-                //                    },
-                //                    $match
-                //                );
-                //                \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
-                //                    $test, null, 3, true, false
-                //                );
-                //                return $test;
-                //            }
-                //        },
-                //        $htmlRow['data']
-                //    );
-                //    \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
-                //        $htmlRow['data'], null, 3, true, false
-                //    );
-                //    $htmlRow['data'] = preg_replace_callback(
-                //        '/\*.*\*/mU',
-                //        function($matches) {
-                //            foreach ($matches as $match) {
-                //                return '<b>'
-                //                    . substr($match, 1, -1)
-                //                    . '</b>';
-                //            }
-                //        },
-                //        $htmlRow['data']
-                //    );
-                //    $textRow = $row;
-                //    $textRow['data'] = preg_replace_callback(
-                //        '/\[.*\]/mU',
-                //        function($matches) {
-                //            foreach ($matches as $match) {
-                //                return preg_replace_callback(
-                //                    '/\[(\S*)\s(.*)\]/mU',
-                //                    function($matchesInner) {
-                //                        if (
-                //                            $matchesInner[2] == $matchesInner[1]
-                //                        ) {
-                //                            return $matchesInner[1];
-                //                        }
-                //                        return $matchesInner[2]
-                //                            . ': '
-                //                            . $matchesInner[1];
-                //                    },
-                //                    $match
-                //                );
-                //            }
-                //        },
-                //        $textRow['data']
-                //    );
-                //    $bodydataText[] = $textRow;
-                //    $bodydataHtml[] = $htmlRow;
-                //    break;
+                case 'contentBlockHtml':
+                    $htmlRow = $row;
+                    $bodydataHtml[] = $htmlRow;
+                    break;
                 case 'attachment':
                     $mail->attach(new \Swift_Attachment(
                         $row['data'][0],
@@ -402,9 +340,6 @@ class MailUtility
         }
         $textView->assign('content', $bodydataText);
         $htmlView->assign('content', $bodydataHtml);
-        //\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
-        //    $bodydataHtml, null, 8, true, false
-        //);
         $domain = $settings['mailDomain'];
         if ($assetDomain) {
             $domain = $assetDomain;
