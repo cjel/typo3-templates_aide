@@ -142,6 +142,11 @@ class ActionController extends BaseController
     protected $propertyMapperConfigurationBuilder;
 
     /**
+     * translation extensions
+     */
+    protected $translations = [];
+
+    /**
      * @param \TYPO3\CMS\Extbase\Service\ExtensionService $extensionService
      */
     public function injectExtensionService(ExtensionService $extensionService)
@@ -616,10 +621,26 @@ class ActionController extends BaseController
                 $this->request->getControllerActionName(),
                 $pluginArguments
             );
+        $uriTranslation = $this->getControllerContext()
+            ->getUriBuilder()
+            ->reset()
+            ->setCreateAbsoluteUri(true)
+            ->setAddQueryString(true)
+            ->setTargetPageType(6001)
+            ->uriFor(
+                'translations',
+                [
+                    'extensions' => $this->translations,
+                ],
+                'Translation',
+                'TemplatesAide',
+                'Translationplugin'
+            );
         $this->ajaxEnv = [
-            'uri'       => $uri,
-            'object'    => $object,
-            'namespace' => $this->getPluginNamespace(),
+            'uri'            => $uri,
+            'uriTranslation' => $uriTranslation,
+            'object'         => $object,
+            'namespace'      => $this->getPluginNamespace(),
         ];
     }
 

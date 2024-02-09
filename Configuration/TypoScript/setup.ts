@@ -1,15 +1,40 @@
 
 plugin.tx_templatesaide_dummy {
     view {
-        templateRootPaths.0 = EXT:{extension.shortExtensionKey}/Resources/Private/Templates/
+        templateRootPaths.0 = EXT:templates_aide/Resources/Private/Templates/
         templateRootPaths.1 = {$plugin.tx_templatesaide_dummy.view.templateRootPath}
         partialRootPaths.0 = EXT:templates_aide/Resources/Private/Partials/
         partialRootPaths.1 = {$plugin.tx_templatesaide_dummy.view.partialRootPath}
-        layoutRootPaths.0 = EXT:tx_templatesaide/Resources/Private/Layouts/
+        layoutRootPaths.0 = EXT:templates_aide/Resources/Private/Layouts/
         layoutRootPaths.1 = {$plugin.tx_templatesaide_dummy.view.layoutRootPath}
     }
     persistence {
         storagePid = {$plugin.tx_templatesaide_dummy.persistence.storagePid}
+        #recursive = 1
+    }
+    features {
+        #skipDefaultArguments = 1
+        # if set to 1, the enable fields are ignored in BE context
+        ignoreAllEnableFieldsInBe = 0
+        # Should be on by default, but can be disabled if all action in the plugin are uncached
+        requireCHashArgumentForActionArguments = 1
+    }
+    mvc {
+        #callDefaultActionIfActionCantBeResolved = 1
+    }
+}
+
+plugin.tx_templatesaide_translationplugin {
+    view {
+        templateRootPaths.0 = EXT:templates_aide/Resources/Private/Templates/
+        templateRootPaths.1 = {$plugin.tx_templatesaide_translationplugin.view.templateRootPath}
+        partialRootPaths.0 = EXT:templates_aide/Resources/Private/Partials/
+        partialRootPaths.1 = {$plugin.tx_templatesaide_translationplugin.view.partialRootPath}
+        layoutRootPaths.0 = EXT:templates_aide/Resources/Private/Layouts/
+        layoutRootPaths.1 = {$plugin.tx_templatesaide_translationplugin.view.layoutRootPath}
+    }
+    persistence {
+        storagePid = {$plugin.tx_templatesaide_translationplugin.persistence.storagePid}
         #recursive = 1
     }
     features {

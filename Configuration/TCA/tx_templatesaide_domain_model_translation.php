@@ -1,7 +1,7 @@
 <?php
 return [
     'ctrl' => [
-        'title' => 'LLL:EXT:templates_aide/Resources/Private/Language/locallang_db.xlf:tx_templatesaide_domain_model_dummy',
+        'title' => 'LLL:EXT:templates_aide/Resources/Private/Language/locallang_db.xlf:tx_templatesaide_domain_model_translation',
         'label' => 'uid',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -17,7 +17,7 @@ return [
             'endtime' => 'endtime',
         ],
         'searchFields' => '',
-        'iconfile' => 'EXT:templates_aide/Resources/Public/Icons/tx_templatesaide_domain_model_dummy.gif'
+        'iconfile' => 'EXT:templates_aide/Resources/Public/Icons/tx_templatesaide_domain_model_translation.gif'
     ],
     'interface' => [
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, ',
@@ -54,8 +54,8 @@ return [
                 'items' => [
                     ['', 0],
                 ],
-                'foreign_table' => 'tx_templatesaide_domain_model_dummy',
-                'foreign_table_where' => 'AND {#tx_templatesaide_domain_model_dummy}.{#pid}=###CURRENT_PID### AND {#tx_templatesaide_domain_model_dummy}.{#sys_language_uid} IN (-1,0)',
+                'foreign_table' => 'tx_templatesaide_domain_model_translation',
+                'foreign_table_where' => 'AND {#tx_templatesaide_domain_model_translation}.{#pid}=###CURRENT_PID### AND {#tx_templatesaide_domain_model_translation}.{#sys_language_uid} IN (-1,0)',
             ],
         ],
         'l10n_diffsource' => [

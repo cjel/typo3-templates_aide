@@ -55,3 +55,19 @@ pageContentelement {
         no_cache = 1
     }
 }
+
+pageTranslation = PAGE
+pageTranslation {
+    typeNum = 6001
+    10 = USER_INT
+    10 {
+        userFunc = Cjel\TemplatesAide\UserFunc\Translation->render
+    }
+    config {
+        disableAllHeaderCode = 1
+        xhtml_cleaning = 0
+        admPanel = 0
+        debug = 0
+        no_cache = 1
+    }
+}

@@ -9,39 +9,69 @@ call_user_func(
             'Cjel.TemplatesAide',
             'Dummy',
             [
-                'Dummy' => 'list'
+                'Dummy' => 'list',
+                'Translation' => 'translations'
             ],
             // non-cacheable actions
             [
-                'Dummy' => ''
+                'Dummy' => '',
+                'Translation' => ''
             ]
         );
 
-    // wizards
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
-        'mod {
-            wizards.newContentElement.wizardItems.plugins {
-                elements {
-                    dummy {
-                        iconIdentifier = templates_aide-plugin-dummy
-                        title = LLL:EXT:templates_aide/Resources/Private/Language/locallang_db.xlf:tx_templates_aide_dummy.name
-                        description = LLL:EXT:templates_aide/Resources/Private/Language/locallang_db.xlf:tx_templates_aide_dummy.description
-                        tt_content_defValues {
-                            CType = list
-                            list_type = templatesaide_dummy
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'Cjel.TemplatesAide',
+            'Translationplugin',
+            [
+                'Translation' => 'translations'
+            ],
+            // non-cacheable actions
+            [
+                'Dummy' => '',
+                'Translation' => ''
+            ]
+        );
+
+        // wizards
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
+            'mod {
+                wizards.newContentElement.wizardItems.plugins {
+                    elements {
+                        dummy {
+                            iconIdentifier = templates_aide-plugin-dummy
+                            title = LLL:EXT:templates_aide/Resources/Private/Language/locallang_db.xlf:tx_templates_aide_dummy.name
+                            description = LLL:EXT:templates_aide/Resources/Private/Language/locallang_db.xlf:tx_templates_aide_dummy.description
+                            tt_content_defValues {
+                                CType = list
+                                list_type = templatesaide_dummy
+                            }
+                        }
+                        translationplugin {
+                            iconIdentifier = templates_aide-plugin-translationplugin
+                            title = LLL:EXT:templates_aide/Resources/Private/Language/locallang_db.xlf:tx_templates_aide_translationplugin.name
+                            description = LLL:EXT:templates_aide/Resources/Private/Language/locallang_db.xlf:tx_templates_aide_translationplugin.description
+                            tt_content_defValues {
+                                CType = list
+                                list_type = templatesaide_translationplugin
+                            }
                         }
                     }
+                    show = *
                 }
-                show = *
-            }
-       }'
-    );
+           }'
+        );
 		$iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
 		
 			$iconRegistry->registerIcon(
 				'templates_aide-plugin-dummy',
 				\TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
 				['source' => 'EXT:templates_aide/Resources/Public/Icons/user_plugin_dummy.svg']
+			);
+		
+			$iconRegistry->registerIcon(
+				'templates_aide-plugin-translationplugin',
+				\TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+				['source' => 'EXT:templates_aide/Resources/Public/Icons/user_plugin_translationplugin.svg']
 			);
 		
     }

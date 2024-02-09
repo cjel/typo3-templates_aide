@@ -38,6 +38,47 @@
                     "relations": []
                 }
             }
+        },
+        {
+            "config": {
+                "position": [
+                    398,
+                    234
+                ]
+            },
+            "name": "New Model Object",
+            "value": {
+                "actionGroup": {
+                    "_default0_list": false,
+                    "_default1_show": false,
+                    "_default2_new_create": false,
+                    "_default3_edit_update": false,
+                    "_default4_delete": false,
+                    "customActions": [
+                        "translations"
+                    ]
+                },
+                "name": "Translation",
+                "objectsettings": {
+                    "addDeletedField": true,
+                    "addHiddenField": true,
+                    "addStarttimeEndtimeFields": true,
+                    "aggregateRoot": false,
+                    "categorizable": false,
+                    "description": "",
+                    "mapToTable": "",
+                    "parentClass": "",
+                    "sorting": false,
+                    "type": "Entity",
+                    "uid": "291507465262"
+                },
+                "propertyGroup": {
+                    "properties": []
+                },
+                "relationGroup": {
+                    "relations": []
+                }
+            }
         }
     ],
     "properties": {
@@ -77,14 +118,25 @@
                 "description": "",
                 "key": "dummy",
                 "name": "dummy"
+            },
+            {
+                "actions": {
+                    "controllerActionCombinations": "Translation => translations",
+                    "noncacheableActions": "",
+                    "switchableActions": ""
+                },
+                "description": "",
+                "key": "translationplugin",
+                "name": "translation"
             }
         ],
         "vendorName": "Cjel"
     },
     "wires": [],
+    "storagePath": "\/var\/www\/html\/webroot\/typo3conf\/ext\/",
     "log": {
-        "last_modified": "2020-04-26 10:03",
-        "extension_builder_version": "9.10.2",
-        "be_user": " (1)"
+        "last_modified": "2024-02-07 06:12",
+        "extension_builder_version": "9.10.6",
+        "be_user": " (68)"
     }
 }

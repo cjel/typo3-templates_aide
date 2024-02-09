@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2022-04-28T10:23:09Z">
-		<header>
-			<generator>LFEditor</generator>
-		</header>
+	<file source-language="en" datatype="plaintext" original="EXT:templates_aide/Resources/Private/Language/locallang" date="2024-02-07T18:12:19Z" product-name="templates_aide">
+		<header/>
 		<body>
-			<trans-unit id="default">
-				<source><![CDATA[Default]]></source>
+			<trans-unit id="tx_templatesaide_domain_model_dummy" resname="tx_templatesaide_domain_model_dummy">
+				<source>Dummy</source>
 			</trans-unit>
-			<trans-unit id="disableDragModal">
-				<source><![CDATA[Disable drag and drop confirmation in page tree]]></source>
+			<trans-unit id="tx_templatesaide_domain_model_translation" resname="tx_templatesaide_domain_model_translation">
+				<source>Translation</source>
 			</trans-unit>
-			<trans-unit id="homepage">
-				<source><![CDATA[Homepage]]></source>
+			<trans-unit id="default" resname="default">
+				<source>Default</source>
 			</trans-unit>
-			<trans-unit id="subpage">
-				<source><![CDATA[Subpage]]></source>
+			<trans-unit id="disableDragModal" resname="disableDragModal">
+				<source>Disable drag and drop confirmation in page tree</source>
 			</trans-unit>
-			<trans-unit id="tx_templatesaide_domain_model_dummy">
-				<source><![CDATA[Dummy]]></source>
+			<trans-unit id="homepage" resname="homepage">
+				<source>Homepage</source>
+			</trans-unit>
+			<trans-unit id="subpage" resname="subpage">
+				<source>Subpage</source>
 			</trans-unit>
 		</body>
 	</file>

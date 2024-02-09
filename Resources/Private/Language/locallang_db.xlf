@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2020-04-26T22:03:44Z" product-name="templates_aide">
+	<file source-language="en" datatype="plaintext" original="EXT:templates_aide/Resources/Private/Language/locallang_db" date="2024-02-07T18:12:19Z" product-name="templates_aide">
 		<header/>
 		<body>
-			<trans-unit id="tx_templatesaide_domain_model_dummy">
+			<trans-unit id="tx_templatesaide_domain_model_dummy" resname="tx_templatesaide_domain_model_dummy">
 				<source>Dummy</source>
 			</trans-unit>
-			<trans-unit id="tx_templates_aide_dummy.name">
+			<trans-unit id="tx_templatesaide_domain_model_translation" resname="tx_templatesaide_domain_model_translation">
+				<source>Translation</source>
+			</trans-unit>
+			<trans-unit id="tx_templates_aide_dummy.name" resname="tx_templates_aide_dummy.name">
 				<source>dummy</source>
 			</trans-unit>
-			<trans-unit id="tx_templates_aide_dummy.description">
+			<trans-unit id="tx_templates_aide_dummy.description" resname="tx_templates_aide_dummy.description">
+				<source></source>
+			</trans-unit>
+			<trans-unit id="tx_templates_aide_translationplugin.name" resname="tx_templates_aide_translationplugin.name">
+				<source>translation</source>
+			</trans-unit>
+			<trans-unit id="tx_templates_aide_translationplugin.description" resname="tx_templates_aide_translationplugin.description">
+				<source></source>
+			</trans-unit>
+			<trans-unit id="tx_templates_aide_translation.name" resname="tx_templates_aide_translation.name">
+				<source>translation</source>
+			</trans-unit>
+			<trans-unit id="tx_templates_aide_translation.description" resname="tx_templates_aide_translation.description">
 				<source></source>
 			</trans-unit>
 		</body>

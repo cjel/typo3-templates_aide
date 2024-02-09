@@ -11,10 +11,19 @@ call_user_func(
             'dummy'
         );
 
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'Cjel.TemplatesAide',
+            'Translationplugin',
+            'translation'
+        );
+
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('templates_aide', 'Configuration/TypoScript', 'Templates Aide');
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_templatesaide_domain_model_dummy', 'EXT:templates_aide/Resources/Private/Language/locallang_csh_tx_templatesaide_domain_model_dummy.xlf');
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_templatesaide_domain_model_dummy');
+
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_templatesaide_domain_model_translation', 'EXT:templates_aide/Resources/Private/Language/locallang_csh_tx_templatesaide_domain_model_translation.xlf');
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_templatesaide_domain_model_translation');
 
     }
 );
@@ -75,4 +84,3 @@ $GLOBALS['TYPO3_USER_SETTINGS']['showitem'] = str_replace(
     'recursiveDelete,disableDragModal',
     $GLOBALS['TYPO3_USER_SETTINGS']['showitem'],
 );
-
