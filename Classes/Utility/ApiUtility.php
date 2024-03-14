@@ -12,9 +12,10 @@ namespace Cjel\TemplatesAide\Utility;
  *
  ***/
 
+use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Resource\FileReference as CoreFileReference;
-use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -229,11 +230,15 @@ class ApiUtility
         $absoluteUrl = $requestHost
             . '/'
             . $publicUrl;
-        $imagePreview = $this->imageService->getImage(
-            $publicUrl,
-            null,
-            0
-        );
+        try {
+            $imagePreview = $this->imageService->getImage(
+                $publicUrl,
+                null,
+                0
+            );
+        } catch (FolderDoesNotExistException $e) {
+            return [];
+        }
         $processingInstructionsPreview = array(
             //'width'     => '1024c',
             //'height'    => '768c',
