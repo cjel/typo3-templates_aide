@@ -171,6 +171,12 @@ class ApiUtility
                 ) {
                     $rowResult[$attributeName] = [];
                     foreach ($methodResult as $object) {
+                        if (!method_exists(
+                            $methodResult,
+                            'getOriginalResource'
+                        )) {
+                            continue;
+                        }
                         $rowResult[$attributeName]
                             = $this->filereferenceToApi(
                                 $methodResult->getOriginalResource()
