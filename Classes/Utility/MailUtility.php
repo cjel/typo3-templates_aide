@@ -218,12 +218,15 @@ class MailUtility
         $mail = GeneralUtility::makeInstance(MailMessage::class);
         if (version_compare(TYPO3_branch, '10.0', '>=')) {
             $mail->subject($subject);
-            $mail->from($sender);
-        }else {
+            if ($sender) {
+                $mail->from($sender);
+            }
+        } else {
             $mail->setSubject($subject);
-            $mail->setFrom($sender);
+            if ($sender) {
+                $mail->setFrom($sender);
+            }
         }
-        
         $bodydataText = [];
         $bodydataHtml = [];
         foreach ($data as $row) {
