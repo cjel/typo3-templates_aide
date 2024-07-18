@@ -15,7 +15,7 @@
 </f:if>
 <f:if condition="{buttonBackgroundcolor}">
   <f:else>
-    <f:variable name="buttonBackgroundcolor" value="#007D5A" />
+    <f:variable name="buttonBackgroundcolor" value="#8ABF6F" />
   </f:else>
 </f:if>
 <f:variable name="widthPadded" value="{width - padding - padding}" />
@@ -24,12 +24,16 @@
 <f:for each="{content}" as="row" key="rowKey" iteration="rowI" >
   <v:condition.type.isArray value="{row.data}">
     <f:else>
+      <f:if condition="{row.type} == 'contentBlockHtml'">
+        {row.data -> f:format.raw()}
+      </f:if>
       <f:if condition="{v:condition.string.contains(haystack: '{row.type}', needle: 'headline', then: '1')}
         || {row.type} == 'text'
         || {row.type} == 'button'
         || {row.type} == 'buttonleft'
         || {row.type} == 'buttoncenter'
         || {row.type} == 'buttonright'
+        || {row.type} == 'divider'
         || {row.type} == 'hr'
       ">
         <!--[if mso | IE]>
@@ -51,6 +55,14 @@
                     <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
                       <tbody>
                         <tr>
+                           <f:switch expression="{row.type}">
+                            <f:case value="divider">
+                              <f:variable name='paddingTd' value='20px 0' />
+                            </f:case>
+                            <f:defaultCase>
+                              <f:variable name='paddingTd' value='0' />
+                            </f:defaultCase>
+                          </f:switch>
                           <td style="vertical-align:top;padding:0;">
                             <table border="0" cellpadding="0" cellspacing="0" role="presentation" style width="100%">
                               <tr>
@@ -65,11 +77,11 @@
                                     <f:variable name='align' value='left' />
                                   </f:defaultCase>
                                 </f:switch>
-                                <td align="{align}" style="font-size:0px;padding:0;word-break:break-word;">
+                                <td align="{align}" style="font-size:0px;padding:{paddingTd};word-break:break-word;">
                                   <div style="font-family:Arial, sans-serif;font-size:16px;line-height:1.4;text-align:{align};color:#000000;">
                                     <f:switch expression="{row.type}">
                                       <f:case value="headline">
-                                        <h1 style="margin-bottom: 20px;margin-top: 40px;font-size: 24px;line-height: 30px;">{row.data -> f:format.nl2br() -> f:format.raw()}</h1>
+                                        <h1>{row.data -> f:format.nl2br() -> f:format.raw()}</h1>
                                       </f:case>
                                       <f:case value="headline2">
                                         <h2>{row.data -> f:format.nl2br() -> f:format.raw()}</h2>
@@ -91,7 +103,7 @@
                                         <span style="display: inline-block;" class="buttonwrapper">
                                           <f:variable name="rowData">{row.data -> v:format.json.decode()}</f:variable>
                                           <a style="display: inline-block; color: {buttonColor}" target="_blank" href="{rowData.0}">
-                                            <span style="display: inline-block; padding: 9px 24px; border-radius: 20px; background-color: {buttonBackgroundcolor};font-weight:bold;font-size:16px;line-height:1.5">
+                                            <span style="display: inline-block; padding: 10px 15px; border-radius: 3px; background-color: {buttonBackgroundcolor};">
                                               {rowData.1}
                                             </span>
                                           </a>
@@ -103,11 +115,39 @@
                                         </span>
                                       </f:case>
                                       <f:case value="hr">
-                                        <p style="border-top:solid 2px #025093;margin:10px auto;width:100%;">
+                                        <p style="border-top:solid 1px #bababa;font-size:1px;margin:13px auto;width:100%;">
                                         </p>
+                                        <!--[if mso | IE]>
+                                          &nbsp;
+                                          <table
+                                            align="center"
+                                            border="0"
+                                            cellpadding="0"
+                                            cellspacing="0"
+                                            style="border-top:solid 1px #bababa;font-size:1px;margin:13px auto;width:100%;"
+                                            role="presentation"
+                                            width="550px"
+                                          >
+                                            <tr>
+                                              <td style="height:0;line-height:0;">
+                                                &nbsp;
+                                              </td>
+                                            </tr>
+                                          </table>
+                                          &nbsp;
+                                        <![endif]-->
+                                      </f:case>
+                                      <f:case value="divider">
+                                        <p style="border-top:solid 2px #025093;font-size:1px;margin:0px auto;width:100%;">
+                                        </p>
+                                        <!--[if mso | IE]>
+                                          <table align="center" border="0" cellpadding="0" cellspacing="0" style="border-top:solid 2px #025093;font-size:1px;margin:0px auto;width:550px;" role="presentation" width="550px" >
+                                            <tr><td style="height:0;line-height:0;"> &nbsp; </td></tr>
+                                          </table>
+                                        <![endif]-->
                                       </f:case>
                                       <f:defaultCase>
-                                        <p style="margin: 20px 0;">{row.data -> f:format.nl2br() -> f:format.raw()}</p>
+                                        <p>{row.data -> f:format.nl2br() -> f:format.raw()}</p>
                                       </f:defaultCase>
                                     </f:switch>
                                   </div>
