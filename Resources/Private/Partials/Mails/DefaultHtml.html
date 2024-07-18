@@ -15,7 +15,7 @@
 </f:if>
 <f:if condition="{buttonBackgroundcolor}">
   <f:else>
-    <f:variable name="buttonBackgroundcolor" value="#8ABF6F" />
+    <f:variable name="buttonBackgroundcolor" value="#007D5A" />
   </f:else>
 </f:if>
 <f:variable name="widthPadded" value="{width - padding - padding}" />
@@ -81,7 +81,7 @@
                                   <div style="font-family:Arial, sans-serif;font-size:16px;line-height:1.4;text-align:{align};color:#000000;">
                                     <f:switch expression="{row.type}">
                                       <f:case value="headline">
-                                        <h1>{row.data -> f:format.nl2br() -> f:format.raw()}</h1>
+                                        <h1 style="margin-bottom: 20px;margin-top: 40px;font-size: 24px;line-height: 30px;">{row.data -> f:format.nl2br() -> f:format.raw()}</h1>
                                       </f:case>
                                       <f:case value="headline2">
                                         <h2>{row.data -> f:format.nl2br() -> f:format.raw()}</h2>
@@ -103,7 +103,7 @@
                                         <span style="display: inline-block;" class="buttonwrapper">
                                           <f:variable name="rowData">{row.data -> v:format.json.decode()}</f:variable>
                                           <a style="display: inline-block; color: {buttonColor}" target="_blank" href="{rowData.0}">
-                                            <span style="display: inline-block; padding: 10px 15px; border-radius: 3px; background-color: {buttonBackgroundcolor};">
+                                            <span style="display: inline-block; padding: 9px 24px; border-radius: 20px; background-color: {buttonBackgroundcolor};font-weight:bold;font-size:16px;line-height:1.5">
                                               {rowData.1}
                                             </span>
                                           </a>
