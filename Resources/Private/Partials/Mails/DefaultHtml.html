@@ -18,6 +18,16 @@
     <f:variable name="buttonBackgroundcolor" value="#8ABF6F" />
   </f:else>
 </f:if>
+<f:if condition="{styleH1}">
+  <f:else>
+    <f:variable name="styleH1" value="" />
+  </f:else>
+</f:if>
+<f:if condition="{styleButton}">
+  <f:else>
+    <f:variable name="styleButton" value="padding: 10px 15px; border-radius: 3px;" />
+  </f:else>
+</f:if>
 <f:variable name="widthPadded" value="{width - padding - padding}" />
 <f:variable name="widthTableColumn" value="{widthPadded / 2}" />
 
@@ -81,7 +91,7 @@
                                   <div style="font-family:Arial, sans-serif;font-size:16px;line-height:1.4;text-align:{align};color:#000000;">
                                     <f:switch expression="{row.type}">
                                       <f:case value="headline">
-                                        <h1>{row.data -> f:format.nl2br() -> f:format.raw()}</h1>
+                                        <h1 style="{styleH1}">{row.data -> f:format.nl2br() -> f:format.raw()}</h1>
                                       </f:case>
                                       <f:case value="headline2">
                                         <h2>{row.data -> f:format.nl2br() -> f:format.raw()}</h2>
@@ -103,7 +113,7 @@
                                         <span style="display: inline-block;" class="buttonwrapper">
                                           <f:variable name="rowData">{row.data -> v:format.json.decode()}</f:variable>
                                           <a style="display: inline-block; color: {buttonColor}" target="_blank" href="{rowData.0}">
-                                            <span style="display: inline-block; padding: 10px 15px; border-radius: 3px; background-color: {buttonBackgroundcolor};">
+                                            <span style="display: inline-block; background-color: {buttonBackgroundcolor}; {styleButton}">
                                               {rowData.1}
                                             </span>
                                           </a>
