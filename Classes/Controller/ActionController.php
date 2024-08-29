@@ -182,7 +182,7 @@ class ActionController extends BaseController
      */
     public function injectPropertyMapper(
         PropertyMapper $propertyMapper
-    ) {
+    ): void {
         $this->propertyMapper = $propertyMapper;
     }
 

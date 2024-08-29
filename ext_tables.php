@@ -39,14 +39,25 @@ call_user_func(
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook'][] =
             \Cjel\TemplatesAide\Hooks\WizardItems::class;
 
-        if(\TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->isDevelopment()) {
-            $GLOBALS['TBE_STYLES']['skins']['backend']['stylesheetDirectories']['dev'] =
-                'EXT:templates_aide/Resources/Public/Css/backend/dev';
-        }
 
-        if(\TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->__toString() === 'Production/Stage') {
-            $GLOBALS['TBE_STYLES']['skins']['backend']['stylesheetDirectories']['dev'] =
-                'EXT:templates_aide/Resources/Public/Css/backend/production-stage';
+        if (version_compare(TYPO3_branch, '10.0', '>=')) {
+            if (\TYPO3\CMS\Core\Core\Environment::getContext()->isDevelopment()) {
+                $GLOBALS['TBE_STYLES']['skins']['backend']['stylesheetDirectories']['dev'] =
+                    'EXT:templates_aide/Resources/Public/Css/backend/dev';
+            }
+            if(\TYPO3\CMS\Core\Core\Environment::getContext()->__toString() === 'Production/Stage') {
+                $GLOBALS['TBE_STYLES']['skins']['backend']['stylesheetDirectories']['dev'] =
+                    'EXT:templates_aide/Resources/Public/Css/backend/production-stage';
+            }
+        } else {
+            if (\TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->isDevelopment()) {
+                $GLOBALS['TBE_STYLES']['skins']['backend']['stylesheetDirectories']['dev'] =
+                    'EXT:templates_aide/Resources/Public/Css/backend/dev';
+            }
+            if(\TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->__toString() === 'Production/Stage') {
+                $GLOBALS['TBE_STYLES']['skins']['backend']['stylesheetDirectories']['dev'] =
+                    'EXT:templates_aide/Resources/Public/Css/backend/production-stage';
+            }
         }
 
         $GLOBALS['TBE_STYLES']['skins']['backend']['stylesheetDirectories']['templates_aide_default'] =

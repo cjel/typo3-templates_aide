@@ -102,11 +102,17 @@ trait DependencyInjectionTrait
                 $frameworkConfiguration['persistence']['storagePid']
             )
         );
-        $this->reflectionService = GeneralUtility::makeInstance(
-            ReflectionService::class, GeneralUtility::makeInstance(
-                CacheManager::class
-            )
-        );
+        if (version_compare(TYPO3_branch, '10.0', '>=')) {
+            $this->reflectionService = GeneralUtility::makeInstance(
+                ReflectionService::class
+            );
+        } else {
+            $this->reflectionService = GeneralUtility::makeInstance(
+                ReflectionService::class, GeneralUtility::makeInstance(
+                    CacheManager::class
+                )
+            );
+        }
         $classInfo = $this->reflectionService->getClassSchema(
             get_class($this)
         );

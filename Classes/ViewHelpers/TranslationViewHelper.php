@@ -66,7 +66,7 @@ class TranslationViewHelper extends AbstractViewHelper
         $translation = LocalizationUtility::translate(
             $arguments['key'],
             $arguments['extensionKey'],
-            $arguments['arguments']
+            (array) $arguments['arguments']
         );
         if ($translation) {
             return $translation;
