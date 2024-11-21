@@ -1,34 +1,36 @@
 <?php
 defined('TYPO3_MODE') || die('Access denied.');
-
+use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
+use Cjel\TemplatesAide\Controller\DummyController;
+use Cjel\TemplatesAide\Controller\TranslationController;
 call_user_func(
     function()
     {
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'Cjel.TemplatesAide',
+            'TemplatesAide',
             'Dummy',
             [
-                'Dummy' => 'list',
-                'Translation' => 'translations'
+              DummyController::class => 'list',
+              TranslationController::class => 'translations'
             ],
             // non-cacheable actions
             [
-                'Dummy' => '',
-                'Translation' => ''
+              DummyController::class => '',
+              TranslationController::class => ''
             ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'Cjel.TemplatesAide',
+            'TemplatesAide',
             'Translationplugin',
             [
-                'Translation' => 'translations'
+              TranslationController::class => 'translations'
             ],
             // non-cacheable actions
             [
-                'Dummy' => '',
-                'Translation' => ''
+                DummyController::class => '',
+                TranslationController::class => ''
             ]
         );
 
@@ -61,19 +63,19 @@ call_user_func(
            }'
         );
 		$iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
-		
+
 			$iconRegistry->registerIcon(
 				'templates_aide-plugin-dummy',
 				\TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
 				['source' => 'EXT:templates_aide/Resources/Public/Icons/user_plugin_dummy.svg']
 			);
-		
+
 			$iconRegistry->registerIcon(
 				'templates_aide-plugin-translationplugin',
 				\TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
 				['source' => 'EXT:templates_aide/Resources/Public/Icons/user_plugin_translationplugin.svg']
 			);
-		
+
     }
 );
 ## EXTENSION BUILDER DEFAULTS END TOKEN - Everything BEFORE this line is overwritten with the defaults of the extension builder
