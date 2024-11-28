@@ -41,9 +41,14 @@ class TranslationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             $languageFactory = GeneralUtility::makeInstance(
                 LocalizationFactory::class
             );
+            $language = $this->request->getAttribute('language');
+            $locale = $language->getLocale();
+            //\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
+            //    $locale, '$locale', 3, true, false
+            //);
             $langfileContent = $languageFactory->getParsedData(
                 $langfilePath,
-                $GLOBALS['LANG']->lang
+                $locale
             );
             $langfileResult = [];
             foreach (reset($langfileContent) as $key => $row) {

@@ -171,22 +171,6 @@ class ActionController extends BaseController
     }
 
     /**
-     * propertyMapper
-     *
-     * @var PropertyMapper
-     */
-    protected $propertyMapper;
-
-    /**
-     * @param
-     */
-    public function injectPropertyMapper(
-        PropertyMapper $propertyMapper
-    ): void {
-        $this->propertyMapper = $propertyMapper;
-    }
-
-    /**
      * propertyMappingConfigurationBuilder
      *
      * @var PropertyMappingConfigurationBuilder
@@ -776,11 +760,36 @@ class ActionController extends BaseController
         }
         if ($this->pageType) {
             if (is_array($this->responseStatus)) {
-                $this->response->setStatus(
-                    array_key_first($this->responseStatus)
-                );
+                if (version_compare(TYPO3_branch, '10.0', '>=')) {
+                    $response =  $this
+                        ->responseFactory
+                        ->createResponse()
+                        ->withHeader(
+                            'Content-Type',
+                            'application/json; charset=utf-8'
+                        )
+                        ->withStatus(
+                            array_key_first($this->responseStatus),
+                            ''
+                        );
+                } else {
+                    $this->response->setStatus(
+                        array_key_first($this->responseStatus)
+                    );
+                }
             } else {
-                $this->response->setStatus($this->responseStatus);
+                if (version_compare(TYPO3_branch, '10.0', '>=')) {
+                    $response =  $this
+                        ->responseFactory
+                        ->createResponse()
+                        ->withHeader(
+                            'Content-Type',
+                            'application/json; charset=utf-8'
+                        )
+                        ->withStatus($this->responseStatus, '');
+                } else {
+                    $this->response->setStatus($this->responseStatus);
+                }
             }
             if ($this->pageType == $this->ajaxPageType) {
                 if ($this->environmentService->isEnvironmentInBackendMode()) {

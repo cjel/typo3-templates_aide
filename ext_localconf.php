@@ -1,36 +1,59 @@
 <?php
 defined('TYPO3_MODE') || die('Access denied.');
 
+
+(static function() {
+
+
+})();
+
 call_user_func(
     function()
     {
+        if (version_compare(TYPO3_branch, '10.0', '>=')) {
 
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'Cjel.TemplatesAide',
-            'Dummy',
-            [
-                'Dummy' => 'list',
-                'Translation' => 'translations'
-            ],
-            // non-cacheable actions
-            [
-                'Dummy' => '',
-                'Translation' => ''
-            ]
-        );
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+                'TemplatesAide',
+                'Translationplugin',
+                [
+                    \Cjel\TemplatesAide\Controller\TranslationController::class => 'translations'
+                ],
+                // non-cacheable actions
+                [
+                    \Cjel\TemplatesAide\Controller\TranslationController::class => ''
+                ]
+            );
 
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'Cjel.TemplatesAide',
-            'Translationplugin',
-            [
-                'Translation' => 'translations'
-            ],
-            // non-cacheable actions
-            [
-                'Dummy' => '',
-                'Translation' => ''
-            ]
-        );
+        } else {
+
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+                'Cjel.TemplatesAide',
+                'Dummy',
+                [
+                    'Dummy' => 'list',
+                    'Translation' => 'translations'
+                ],
+                // non-cacheable actions
+                [
+                    'Dummy' => '',
+                    'Translation' => ''
+                ]
+            );
+
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+                'Cjel.TemplatesAide',
+                'Translationplugin',
+                [
+                    'Translation' => 'translations'
+                ],
+                // non-cacheable actions
+                [
+                    'Dummy' => '',
+                    'Translation' => ''
+                ]
+            );
+
+        }
 
         // wizards
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
