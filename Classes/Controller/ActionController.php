@@ -805,7 +805,12 @@ class ActionController extends BaseController
             if ($this->reload) {
                 $result['reload'] = true;
             }
-            return json_encode($result);
+            if (version_compare(TYPO3_branch, '10.0', '>=')) {
+                $response->getBody()->write(json_encode($result));
+                return $response;
+            } else {
+                return json_encode($result);
+            }
         }
         $result = array_merge(
             $result,
@@ -820,5 +825,12 @@ class ActionController extends BaseController
             );
         }
         $this->view->assignMultiple($result);
+        return $this
+            ->responseFactory
+            ->createResponse()
+            ->withHeader('Content-Type', 'text/html; charset=utf-8')
+            ->withBody($this->streamFactory->createStream(
+                (string)($html ?? $this->view->render()))
+            );
     }
 }
