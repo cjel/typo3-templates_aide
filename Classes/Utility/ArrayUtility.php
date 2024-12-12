@@ -67,4 +67,20 @@ class ArrayUtility
         return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
+    /**
+     * Returns the depth of an array
+     */
+    function depth(array $array) {
+        $depthMax = 1;
+        foreach ($array as $value) {
+            if (is_array($value)) {
+                $depth = self::depth($value) + 1;
+                if ($depth > $depthMax) {
+                    $depthMax = $depth;
+                }
+            }
+        }
+        return $depthMax;
+    }
+
 }
