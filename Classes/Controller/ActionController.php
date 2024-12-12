@@ -825,12 +825,14 @@ class ActionController extends BaseController
             );
         }
         $this->view->assignMultiple($result);
-        return $this
-            ->responseFactory
-            ->createResponse()
-            ->withHeader('Content-Type', 'text/html; charset=utf-8')
-            ->withBody($this->streamFactory->createStream(
-                (string)($html ?? $this->view->render()))
-            );
+        if (version_compare(TYPO3_branch, '10.0', '>=')) {
+            return $this
+                ->responseFactory
+                ->createResponse()
+                ->withHeader('Content-Type', 'text/html; charset=utf-8')
+                ->withBody($this->streamFactory->createStream(
+                    (string)($html ?? $this->view->render()))
+                );
+        }
     }
 }
