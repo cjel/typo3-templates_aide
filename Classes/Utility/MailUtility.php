@@ -368,7 +368,20 @@ class MailUtility
         if ($assetDomain) {
             $domain = $assetDomain;
         }
+        $dataProtectionPid = $settings['dataProtectionPid'];
+        $uriBuilder = $objectManager->get(
+            UriBuilder::class
+        );
+        if ($dataProtectionPid) {
+            $dataProtectionPid = $uriBuilder
+            ->reset()
+            ->setTargetPageUid(
+                $settings['dataProtectionPid']
+            )
+            ->build();
+        }
         $htmlView->assign('domain', $domain);
+        $htmlView->assign('linkDataprotection', $dataProtectionPid);
         $textBody = $textView->render();
         $htmlBody = $htmlView->render();
         if ($domain) {
