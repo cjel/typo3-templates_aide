@@ -27,6 +27,7 @@ use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationBuilder;
 use TYPO3\CMS\Extbase\Service\EnvironmentService;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use Blueways\BwCaptcha\Validation\Validator\CaptchaValidator;
 
 class ActionController extends BaseController
 {
@@ -834,5 +835,27 @@ class ActionController extends BaseController
                     (string)($html ?? $this->view->render()))
                 );
         }
+    }
+    /** **/
+    protected function valideCaptcha($captchaId, $value
+    ) {
+        $cacheIdentifier = $GLOBALS['TSFE']->fe_user->getKey('ses', $captchaId);
+ 
+        if (!$cacheIdentifier) {
+            $this->addValidationError(
+                'captcha',
+                'validator.notvalid'
+            );
+        }
+        // get captcha secret from cache and compare
+        $cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('bwcaptcha');
+        $phrase = $cache->get($cacheIdentifier);
+        if ($phrase && $phrase === $value) {
+            return true;
+        }
+        $this->addValidationError(
+            'captcha',
+            'validator.notvalid'
+        );
     }
 }
