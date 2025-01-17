@@ -221,7 +221,7 @@ class MailUtility
         $textView->setTemplate($templateNameText);
         $mail = GeneralUtility::makeInstance(MailMessage::class);
         if (version_compare(TYPO3_branch, '10.0', '>=')) {
-            $mail->from(new Address($sender));
+            $mail->from(new Address(key($sender),$sender[key($sender)]));
             $mail->subject($subject);
         } else {
             $mail->setFrom($sender);
