@@ -585,7 +585,7 @@ class ActionController extends BaseController
             if (in_array($argument->getName(), ['step', 'submit', $object])) {
                 continue;
             }
-            if (method_exists($argument->getValue(), 'getUid')) {
+            if (is_string($argument->getValue()) && method_exists($argument->getValue(), 'getUid')) {
                 $pluginArguments[$argument->getName()]
                     = $argument->getValue()->getUid();
             } else {
@@ -840,7 +840,7 @@ class ActionController extends BaseController
     protected function valideCaptcha($captchaId, $value
     ) {
         $cacheIdentifier = $GLOBALS['TSFE']->fe_user->getKey('ses', $captchaId);
- 
+
         if (!$cacheIdentifier) {
             $this->addValidationError(
                 'captcha',
