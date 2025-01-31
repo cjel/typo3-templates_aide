@@ -21,7 +21,7 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Fluid\View\TemplatePaths;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use Symfony\Component\Mime\Address;
-
+use TYPO3\CMS\Frontend\Page\PageRepository;
 /**
  *
  */
@@ -373,12 +373,9 @@ class MailUtility
             UriBuilder::class
         );
         if ($dataProtectionPid) {
-            $dataProtectionPid = $uriBuilder
-            ->reset()
-            ->setTargetPageUid(
-                $settings['dataProtectionPid']
-            )
-            ->build();
+            $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+            $urlPage = $pageRepository->getPage($settings['dataProtectionPid']);
+            $dataProtectionPid = $domain.$urlPage['slug'];
         }
         $htmlView->assign('domain', $domain);
         $htmlView->assign('linkDataprotection', $dataProtectionPid);
