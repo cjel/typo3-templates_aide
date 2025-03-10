@@ -41,7 +41,11 @@ class TranslationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             $languageFactory = GeneralUtility::makeInstance(
                 LocalizationFactory::class
             );
-            $language = $this->request->getAttribute('language');
+            if (version_compare(TYPO3_branch, '10.0', '>=')) {
+                $language = $this->request->getAttribute('language');
+            } else {
+                $language = $GLOBALS['TYPO3_REQUEST']->getAttribute('language');
+            }
             $locale = $language->getLocale();
             //\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
             //    $locale, '$locale', 3, true, false
