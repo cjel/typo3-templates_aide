@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Resource\FileReference as CoreFileReference;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Service\ImageService;
@@ -76,6 +77,9 @@ class ApiUtility
                 if (substr($method, 0, 3) === 'get') {
                     $methodResult = call_user_func([$row, $method]);
                     $attributeName = lcfirst(substr($method, 3));
+                    if (get_class($methodResult) == LazyLoadingProxy::class) {
+                        $methodResult = $methodResult->_loadRealInstance();
+                    }
                     $propertieResults[$attributeName] = $methodResult;
                 }
             }
