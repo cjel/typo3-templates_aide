@@ -143,6 +143,26 @@ class TcaUtility
     }
 
     /**
+     * @return string
+     */
+    public static function listMoveFieldBeforeField(
+        $fieldlist, $field, $fieldBefore
+    ) {
+        $fieldlist = GeneralUtility::trimExplode(
+            ',',
+            $fieldlist
+        );
+        unset($fieldlist[(array_search($field, $fieldlist))]);
+        array_splice(
+            $fieldlist,
+            array_search($fieldBefore, $fieldlist),
+            0,
+            $field
+        );
+        return implode(', ', $fieldlist);
+    }
+
+    /**
      * remove element from fieldlist
      *
      * @return array
