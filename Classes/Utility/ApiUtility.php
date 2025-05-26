@@ -77,7 +77,9 @@ class ApiUtility
                 if (substr($method, 0, 3) === 'get') {
                     $methodResult = call_user_func([$row, $method]);
                     $attributeName = lcfirst(substr($method, 3));
-                    if (get_class($methodResult) == LazyLoadingProxy::class) {
+                    if (is_object($methodResult)
+                        && get_class($methodResult) == LazyLoadingProxy::class
+                    ) {
                         $methodResult = $methodResult->_loadRealInstance();
                     }
                     $propertieResults[$attributeName] = $methodResult;
