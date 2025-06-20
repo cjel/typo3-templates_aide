@@ -28,6 +28,7 @@ use TYPO3\CMS\Extbase\Service\EnvironmentService;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Blueways\BwCaptcha\Validation\Validator\CaptchaValidator;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 class ActionController extends BaseController
 {
@@ -839,23 +840,40 @@ class ActionController extends BaseController
     /** **/
     protected function valideCaptcha($captchaId, $value
     ) {
-        $cacheIdentifier = $GLOBALS['TSFE']->fe_user->getKey('ses', $captchaId);
-
-        if (!$cacheIdentifier) {
+        $captchaPhrases = $this->getFeUser()->getKey('ses', 'captchaPhrases');
+        if (!$captchaPhrases || !is_array($captchaPhrases) || !is_string($value)) {
             $this->addValidationError(
                 'captcha',
                 'validator.notvalid'
             );
         }
         // get captcha secret from cache and compare
-        $cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('bwcaptcha');
-        $phrase = $cache->get($cacheIdentifier);
-        if ($phrase && $phrase === $value) {
-            return true;
+        $time = time();
+        $captchaPhrases = array_filter(
+            $captchaPhrases,
+            function ($captchaLifetime) use ($time) {
+                return $captchaLifetime > $time;
+            },
+            ARRAY_FILTER_USE_KEY
+        );
+        foreach ($captchaPhrases as $lifetime => $captchaPhrase) {
+            $isValid = !empty($captchaPhrase) && $captchaPhrase === $value;
+            if ($isValid) {
+                // remove solved captcha
+                unset($captchaPhrases[$lifetime]);
+                $this->getFeUser()->setKey('ses', 'captchaPhrases', $captchaPhrases);
+                $this->getFeUser()->storeSessionData();
+                return true;
+            }
         }
         $this->addValidationError(
             'captcha',
             'validator.notvalid'
         );
+    }
+
+    protected function getFeUser(): FrontendUserAuthentication
+    {
+        return $GLOBALS['TSFE']->fe_user;
     }
 }
