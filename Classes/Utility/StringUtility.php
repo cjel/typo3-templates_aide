@@ -45,7 +45,7 @@ class StringUtility
         return $string;
     }
 
-    function getRandomString(
+    public static function getRandomString(
         int $length = 64,
         string $keyspace = null
     ): string {
