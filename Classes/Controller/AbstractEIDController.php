@@ -17,11 +17,19 @@ use Cjel\TemplatesAide\Traits\ValidationTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DefaultRestrictionContainer;
+use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Routing\SiteMatcher;
+use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
@@ -148,15 +156,26 @@ class AbstractEIDController
         $this->importLogger = $this->logManager->getLogger(
             'importLogger'
         );
-        $this->reflectionService = GeneralUtility::makeInstance(
-            ReflectionService::class, GeneralUtility::makeInstance(
-                CacheManager::class
-            )
-        );
+        if (version_compare(TYPO3_branch, '10.0', '>=')) {
+            $this->reflectionService = GeneralUtility::makeInstance(
+                ReflectionService::class
+            );
+        } else {
+            $this->reflectionService = GeneralUtility::makeInstance(
+                ReflectionService::class, GeneralUtility::makeInstance(
+                    CacheManager::class
+                )
+            );
+        }
         $classInfo = $this->reflectionService->getClassSchema(
             get_class($this)
         );
         foreach ($classInfo->getInjectMethods() as $method => $className) {
+            if (version_compare(TYPO3_branch, '10.0', '>=')) {
+                $className = $className
+                    ->getFirstParameter()
+                    ->getDependency();
+            }
             $class = $this->objectManager->get(
                 $className
             );
@@ -169,47 +188,37 @@ class AbstractEIDController
      */
     private function initFrontendController()
     {
-        $currentDomain = strtok(GeneralUtility::getIndpEnv('HTTP_HOST'), ':');
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('sys_domain');
-        $queryBuilder->setRestrictions(
-            GeneralUtility::makeInstance(DefaultRestrictionContainer::class)
+        $request = ServerRequestFactory::fromGlobals();
+        $context = GeneralUtility::makeInstance(Context::class);
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        $siteMatcher = GeneralUtility::makeInstance(SiteMatcher::class);
+        $site = $siteMatcher->matchRequest($request);
+        $pageId = $site->getSite()->getRootPageId();
+        $template = GeneralUtility::makeInstance(TemplateService::class);
+        $template->tt_track = false;
+        $rootline = GeneralUtility::makeInstance(
+            RootlineUtility::class, $pageId
+        )->get();
+        $template->runThroughTemplates($rootline, 0);
+        $template->generateConfig();
+        $setup = $template->setup;
+        $setup = GeneralUtility::removeDotsFromTS($setup);
+        $extKey = 'tx_' . $this->getExtensionKey();
+        if (array_key_exists('plugin', $setup)
+            && array_key_exists($extKey, $setup['plugin'])
+            && array_key_exists('persistence', $setup['plugin'][$extKey])
+            && array_key_exists('storagePid', $setup['plugin'][$extKey]['persistence'])
+        ) {
+            $storagePids = $setup['plugin'][$extKey]['persistence']['storagePid'];
+            $this->storagePids = GeneralUtility::trimExplode(
+                ',',
+                $storagePids
+            );
+        }
+        $languageServiceFactory = GeneralUtility::makeInstance(
+            LanguageServiceFactory::class
         );
-        $result = $queryBuilder
-            ->select('uid', 'pid', 'domainName')
-            ->from('sys_domain')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'domainName',
-                    $queryBuilder->createNamedParameter(
-                        $currentDomain,
-                        \PDO::PARAM_STR
-                    )
-                )
-            )
-            ->orderBy('sorting', 'ASC')
-            ->execute()
-            ->fetchAll();
-        //if (count($result) < 1) {
-        //    throw new \Exception('Domain not configured');
-        //}
-        $frontendController = GeneralUtility::makeInstance(
-            \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
-            $GLOBALS['TYPO3_CONF_VARS'],
-            null,
-            0,
-            true
-        );
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-        $GLOBALS['LANG']->init('default');
-        $GLOBALS['TSFE'] = $frontendController;
-        $frontendController->connectToDB();
-        $frontendController->fe_user = EidUtility::initFeUser();
-        $frontendController->id = $result[0]['pid'];
-        $frontendController->determineId();
-        $frontendController->initTemplate();
-        $frontendController->getConfigArray();
-        EidUtility::initTCA();
+        $GLOBALS['LANG'] = $languageServiceFactory->create('default');
     }
 
     /**
@@ -271,6 +280,7 @@ class AbstractEIDController
                     . 'Request';
             }
         }
+        $response = new Response();
         if (method_exists($this, $requestMethod)) {
             $responseData = $this->$requestMethod($request, $response);
             $response = $response->withHeader(
