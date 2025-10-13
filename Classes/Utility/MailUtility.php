@@ -21,7 +21,7 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Fluid\View\TemplatePaths;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use Symfony\Component\Mime\Address;
-use TYPO3\CMS\Frontend\Page\PageRepository;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 /**
  *
  */
