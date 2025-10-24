@@ -27,8 +27,8 @@ use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationBuilder;
 use TYPO3\CMS\Extbase\Service\EnvironmentService;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use Blueways\BwCaptcha\Validation\Validator\CaptchaValidator;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 
 class ActionController extends BaseController
 {
@@ -838,8 +838,8 @@ class ActionController extends BaseController
         }
     }
     /** **/
-    protected function valideCaptcha($captchaId, $value
-    ) {
+    protected function valideCaptcha($value
+    ): void {
         $captchaPhrases = $this->getFeUser()->getKey('ses', 'captchaPhrases');
         if (!$captchaPhrases || !is_array($captchaPhrases) || !is_string($value)) {
             $this->addValidationError(
@@ -863,7 +863,7 @@ class ActionController extends BaseController
                 unset($captchaPhrases[$lifetime]);
                 $this->getFeUser()->setKey('ses', 'captchaPhrases', $captchaPhrases);
                 $this->getFeUser()->storeSessionData();
-                return true;
+                return ;
             }
         }
         $this->addValidationError(
