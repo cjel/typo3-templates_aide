@@ -66,8 +66,11 @@ class TranslationUtility
                 $extensionKey = 'site_templates';
             }
             $translation = LocalizationUtility::translate(
-                'LLL:EXT:'. $extensionKey .
-                '/Resources/Private/Language/locallang_db.xlf:'. $key);
+                'LLL:EXT:'
+                    . $extensionKey
+                    . '/Resources/Private/Language/locallang_db.xlf:'
+                    . $key
+            );
             return $translation;
         } else {
             if ($extensionKey) {
