@@ -44,7 +44,8 @@ class ApiUtility
         $queryResult,
         $additionalAttributes = [],
         $mapping              = [],
-        $rootRowClass         = null
+        $rootRowClass         = null,
+        $options              = []
     ) {
         $this->objectManager = GeneralUtility::makeInstance(
             ObjectManager::class
@@ -130,7 +131,8 @@ class ApiUtility
                         $methodResult,
                         $additionalAttributes[$attributeName],
                         $mapping,
-                        $nextLevelClass
+                        $nextLevelClass,
+                        $options
                     );
                     if ($imageStorage) {
                         foreach ($attributeResult as &$attributeResultRow) {
@@ -167,7 +169,8 @@ class ApiUtility
                         [$methodResult],
                         $additionalAttributes[$attributeName],
                         $mapping,
-                        $nextLevelClass
+                        $nextLevelClass,
+                        $options
                     )[0];
                     $rowResult[$attributeName . 'Uid']
                         = $rowResult[$attributeName]['uid'];
@@ -217,6 +220,10 @@ class ApiUtility
                         unset($rowResult[$attributeName]);
                     }
                 }
+            }
+            if (($options['clearIds'] ?? '' ) === true) {
+                unset($rowResult['uid']);
+                unset($rowResult['pid']);
             }
             $result[] = $rowResult;
         }
