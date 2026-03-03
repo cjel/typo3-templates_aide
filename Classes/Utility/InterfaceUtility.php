@@ -37,4 +37,22 @@ class InterfaceUtility
         }, ARRAY_FILTER_USE_KEY);
         return array_values($constants);
     }
+
+    /**
+     * Get all interface constants per prefix
+     */
+    public static function parseInterfaceConstantsAssoc(
+        $interfaceClass, $prefix
+    ) {
+        $constants = (new \ReflectionClass($interfaceClass))
+            ->getConstants();
+        $constants = array_filter($constants, function($key) use ($prefix) {
+            if (substr($key, 0, strlen($prefix) + 1)
+                == strtoupper($prefix) . '_'
+            ) {
+                return true;
+            }
+        }, ARRAY_FILTER_USE_KEY);
+        return $constants;
+    }
 }
