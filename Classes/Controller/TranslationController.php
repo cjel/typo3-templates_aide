@@ -46,16 +46,16 @@ class TranslationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCont
             } else {
                 $language = $GLOBALS['TYPO3_REQUEST']->getAttribute('language');
             }
-            $locale = $language->getLocale();
-            //\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump(
-            //    $locale, '$locale', 3, true, false
-            //);
+            $language = $language->getTypo3language();
             $langfileContent = $languageFactory->getParsedData(
                 $langfilePath,
-                $locale
+                $language
             );
             $langfileResult = [];
             foreach (reset($langfileContent) as $key => $row) {
+                $langfileResult[$key] = reset($row)['target'];
+            }
+            foreach ($langfileContent[$language] as $key => $row) {
                 $langfileResult[$key] = reset($row)['target'];
             }
             $result[$extension] = $langfileResult;
